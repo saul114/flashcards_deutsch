@@ -440,17 +440,66 @@
       document.getElementById("stat-review").innerText = review;
     }
 
-    // Síntesi de Veu en Alemany Nativa (Web Speech API)
+    let germanVoice = null;
+
+    function loadGermanVoice() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return;
+
+      const norm = v => v.lang.replace('_', '-').toLowerCase();
+
+      // Preferimos de-DE; si no hay ninguna, aceptamos cualquier variante alemana
+      let deVoices = voices.filter(v => norm(v) === 'de-de');
+      if (deVoices.length === 0) {
+        deVoices = voices.filter(v => norm(v).startsWith('de'));
+      }
+      if (deVoices.length === 0) return;
+
+      const score = v => {
+        const n = v.name.toLowerCase();
+        let s = 0;
+        if (n.includes('premium')) s += 100;
+        else if (n.includes('enhanced') || n.includes('erweitert') || n.includes('mejorada')) s += 50;
+        if (/anna|helena|markus|petra|viktor/.test(n)) s += 10;
+        if (v.localService) s += 5;
+        return s;
+      };
+
+      germanVoice = [...deVoices].sort((a, b) => score(b) - score(a))[0];
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadGermanVoice;
+      loadGermanVoice();
+    }
+
     function playGermanAudio(textToSpeak) {
       if (!('speechSynthesis' in window)) return;
-      
+
       const item = activeDeck[currentIndex];
-      const text = textToSpeak || item.term.replace(/^(der|die|das)\s+/i, ''); // llegeix el terme
-      
+      const rawText = textToSpeak || item.term;
+
+      // Limpieza: quita paréntesis de anotaciones y lee solo la primera variante
+      const cleanText = rawText
+        .replace(/\([^)]*\)/g, '')   // (Pl.), (Sg.), (+ Akk.)...
+        .split('/')[0]               // "mein / meine" -> "mein"
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      if (!cleanText) return;
+
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'de-DE';
-      utterance.rate = 0.9; // ritme ideal per estudiants A1
+
+      if (!germanVoice) loadGermanVoice();
+      if (germanVoice) {
+        utterance.voice = germanVoice;
+      }
+
+      utterance.rate = 0.88;
+      utterance.pitch = 1;
       window.speechSynthesis.speak(utterance);
     }
 
