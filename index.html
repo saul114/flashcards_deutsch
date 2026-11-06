@@ -352,7 +352,15 @@
                 speakText = item.article + ' ' + item.word;
             }
             const icon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
-            return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "\'")}', event)">${icon}</button>`;
+            return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "'")}', event)">${icon}</button>`;
+        }
+
+        // Funció per remenar l'array actual
+        function shuffleCurrentVocab() {
+            for (let i = vocab.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vocab[i], vocab[j]] = [vocab[j], vocab[i]];
+            }
         }
 
         function initApp() {
@@ -365,14 +373,24 @@
                 if(item.ca) item.ca = item.ca.replace(/^\d+[\.\-\)]?\s*/, '').trim();
                 return item;
             });
+            
+            // Aplica el mode i el remena automàticament a l'entrar
             applyModeFilter();
         }
 
         function applyModeFilter() {
             currentMode = modeSelect.value;
             let currentList = (typeof window.VOCAB_DATA !== 'undefined') ? [...window.VOCAB_DATA] : [...FALLBACK_VOCAB];
-            if (currentMode === 'art-pl') vocab = currentList.filter(item => item.type === 'noun');
-            else vocab = currentList;
+            
+            if (currentMode === 'art-pl') {
+                vocab = currentList.filter(item => item.type === 'noun');
+            } else {
+                vocab = currentList;
+            }
+            
+            // REMENAR AUTOMÀTICAMENT QUAN CARREGA O ES CANVIA DE MODE
+            shuffleCurrentVocab();
+            
             currentIndex = 0;
             updateCard();
         }
@@ -455,10 +473,7 @@
             updateCard();
         });
         document.getElementById('shuffleBtn').addEventListener('click', () => {
-            for (let i = vocab.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [vocab[i], vocab[j]] = [vocab[j], vocab[i]];
-            }
+            shuffleCurrentVocab();
             currentIndex = 0;
             updateCard();
         });
