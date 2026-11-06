@@ -2,22 +2,24 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8">
-    <!-- Optimització iPhone: viewport-fit=cover i deshabilitar zoom per a comportament d'App nativa -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Alemany A1 - Vocabulari</title>
+    <!-- Afegeix el theme-color negre per forçar la barra de Safari al mateix color fosc -->
+    <meta name="theme-color" content="#000000">
+    <title>Alemany A1 - Vocabulari (OLED)</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #f1f5f9 100%);
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            /* MODO OLED OSCUR */
+            --bg-gradient: #000000; /* Fons completament negre */
+            --card-bg: #121212; /* Gris molt fosc per donar profunditat a la targeta sobre fons negre */
+            --text-main: #f8fafc;
+            --text-muted: #a1a1aa;
             --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --der-color: #0ea5e9; /* Blau brillant */
-            --die-color: #e11d48; /* Vermell/Rosa intens */
-            --das-color: #10b981; /* Verd maragda */
+            --primary-hover: #60a5fa;
+            --der-color: #38bdf8; /* Blau clar */
+            --die-color: #fb7185; /* Rosa clar */
+            --das-color: #34d399; /* Verd clar */
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
@@ -41,14 +43,14 @@
             padding-bottom: var(--safe-bottom);
         }
 
-        /* --- HEADER & CONTROLS (Glassmorphism) --- */
+        /* --- HEADER & CONTROLS --- */
         header {
             padding: 16px 20px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(0, 0, 0, 0.85); /* Negre amb opacitat */
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.08); /* Vora suau */
             z-index: 10;
         }
         h1 {
@@ -67,42 +69,40 @@
         select, button {
             padding: 12px 18px;
             border-radius: 14px;
-            border: 1px solid rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
             font-size: 0.95rem;
             font-weight: 500;
-            background: white;
+            background: #1c1c1e; /* Estil botons natius de iOS en Dark Mode */
             color: var(--text-main);
             outline: none;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
             transition: all 0.2s ease;
         }
         select {
             appearance: none;
             padding-right: 36px;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231e293b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23f8fafc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 14px top 50%;
             background-size: 10px auto;
         }
-        select:active { background-color: #f8fafc; }
+        select:active { background-color: #2c2c2e; }
         button {
             background: var(--primary);
             color: white;
             font-weight: 600;
             border: none;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
         button:active {
             background: var(--primary-hover);
             transform: scale(0.96);
         }
         
-        /* Barra de progrés */
         .progress-container {
             width: 100%;
             height: 5px;
-            background: rgba(0,0,0,0.06);
+            background: rgba(255,255,255,0.12);
             margin-top: 18px;
             border-radius: 3px;
             overflow: hidden;
@@ -131,7 +131,6 @@
             height: 100%;
             max-height: 520px;
             position: relative;
-            /* Animació súper suau estil iOS */
             transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-style: preserve-3d;
             cursor: pointer;
@@ -147,19 +146,18 @@
             backface-visibility: hidden;
             background: var(--card-bg);
             border-radius: 32px;
-            box-shadow: 0 12px 36px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.03);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 32px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .card-back {
             transform: rotateY(180deg);
-            background: #fafcff;
-            border: 1px solid rgba(0,0,0,0.04);
+            background: #0a0a0a; /* Lleugerament diferent per distingir la part posterior */
         }
 
         /* --- TIPOGRAFIA INTERNA --- */
@@ -171,10 +169,33 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.2px;
-            background: #f1f5f9;
+            background: rgba(255,255,255,0.1);
             padding: 6px 12px;
             border-radius: 12px;
             color: var(--text-muted);
+        }
+        
+        /* --- BOTÓ D'ÀUDIO (Més gran) --- */
+        .speak-btn {
+            position: absolute;
+            top: 18px;
+            left: 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+            width: 54px;   /* Molt més gran per als dits */
+            height: 54px;  /* Molt més gran per als dits */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        .speak-btn:active {
+            transform: scale(0.85);
+            background: rgba(255,255,255,0.2);
         }
 
         .word-main {
@@ -196,14 +217,14 @@
             color: var(--text-muted);
             font-style: italic;
             margin-bottom: 24px;
-            background: #f8fafc;
+            background: rgba(255,255,255,0.05);
             padding: 8px 18px;
             border-radius: 20px;
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
         }
         
         .example-box {
-            background: #f8fafc;
+            background: rgba(255,255,255,0.04);
             padding: 20px;
             border-radius: 18px;
             width: 100%;
@@ -211,7 +232,6 @@
             line-height: 1.5;
             text-align: left;
             border-left: 4px solid var(--primary);
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
             margin-top: 10px;
         }
         .example-de {
@@ -224,11 +244,10 @@
             font-size: 0.95rem;
         }
 
-        /* Colors dels articles */
         .art-der { color: var(--der-color); }
         .art-die { color: var(--die-color); }
         .art-das { color: var(--das-color); }
-        .hidden-art { color: #cbd5e1; } /* Per al mode ocult */
+        .hidden-art { color: #52525b; } 
         
         /* --- NAVEGACIÓ INFERIOR --- */
         .footer-controls {
@@ -238,7 +257,7 @@
             padding: 10px 32px 25px;
         }
         .nav-btn {
-            background: white;
+            background: #1c1c1e;
             color: var(--text-main);
             width: 64px;
             height: 64px;
@@ -247,12 +266,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
             transition: all 0.2s ease;
-            border: 1px solid rgba(0,0,0,0.02);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .nav-btn:active {
-            background: #f1f5f9;
+            background: #2c2c2e;
             transform: scale(0.92);
         }
         
@@ -261,14 +280,13 @@
             font-weight: 600;
             color: var(--text-muted);
             font-variant-numeric: tabular-nums;
-            background: rgba(255,255,255,0.6);
+            background: rgba(0, 0, 0, 0.8);
             padding: 8px 16px;
             border-radius: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
     </style>
-    <!-- Carreguem el fitxer extern (vocab.js). Si falla o està bloquejat, l'App ho detecta i utilitza un Fallback. -->
     <script src="vocab.js"></script>
 </head>
 <body>
@@ -290,12 +308,8 @@
 
     <div class="card-container" id="cardContainer">
         <div class="card" id="flashcard">
-            <div class="card-face card-front" id="cardFront">
-                <!-- S'omple per JS -->
-            </div>
-            <div class="card-face card-back" id="cardBack">
-                <!-- S'omple per JS -->
-            </div>
+            <div class="card-face card-front" id="cardFront"></div>
+            <div class="card-face card-back" id="cardBack"></div>
         </div>
     </div>
 
@@ -306,7 +320,6 @@
     </div>
 
     <script>
-        // Dades d'emergència en cas de que iOS bloquegi el fitxer local
         const FALLBACK_VOCAB = [
             { id: "fb_1", type: "noun", article: "der", word: "Apfel", pluralSuffix: "¨-", pluralFull: "die Äpfel", forms: "der Apfel, ¨-", ca: "poma", exDe: "Ich esse einen Apfel.", exCa: "Menjo una poma." },
             { id: "fb_2", type: "noun", article: "das", word: "Buch", pluralSuffix: "¨-er", pluralFull: "die Bücher", forms: "das Buch, ¨-er", ca: "llibre", exDe: "Das Buch ist interessant.", exCa: "El llibre és interessant." },
@@ -326,33 +339,48 @@
         const statsDisplay = document.getElementById('statsDisplay');
         const progressFill = document.getElementById('progressFill');
 
+        // Reproductor TTS nativo
+        window.playSpeech = function(text, event) {
+            event.stopPropagation(); // Evita que es giri la targeta al tocar l'altaveu
+            if (!('speechSynthesis' in window)) {
+                alert("El teu navegador no suporta la reproducció d'àudio.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = 0.85; 
+            window.speechSynthesis.speak(utterance);
+        };
+
+        function getSpeakerButton(item, hideArticle = false) {
+            let speakText = item.word;
+            if (item.type === 'noun' && item.article && !hideArticle) {
+                speakText = item.article + ' ' + item.word;
+            }
+            // SVG augmentat a 28x28
+            const icon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+            return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "\'")}', event)">${icon}</button>`;
+        }
+
         function initApp() {
             if (typeof window.VOCAB_DATA !== 'undefined' && Array.isArray(window.VOCAB_DATA) && window.VOCAB_DATA.length > 0) {
                 vocab = [...window.VOCAB_DATA];
             } else {
                 vocab = [...FALLBACK_VOCAB];
-                console.warn("Fitxer vocab.js no trobat o bloquejat. Carregant dades de prova.");
             }
-            
-            // Neteja preventiva: treure números inicials del català per si n'hi hagués (ex: "1. Taula" -> "Taula")
             vocab = vocab.map(item => {
                 if(item.ca) item.ca = item.ca.replace(/^\d+[\.\-\)]?\s*/, '').trim();
                 return item;
             });
-
             applyModeFilter();
         }
 
         function applyModeFilter() {
             currentMode = modeSelect.value;
             let currentList = (typeof window.VOCAB_DATA !== 'undefined') ? [...window.VOCAB_DATA] : [...FALLBACK_VOCAB];
-            
-            if (currentMode === 'art-pl') {
-                vocab = currentList.filter(item => item.type === 'noun');
-            } else {
-                vocab = currentList;
-            }
-            
+            if (currentMode === 'art-pl') vocab = currentList.filter(item => item.type === 'noun');
+            else vocab = currentList;
             currentIndex = 0;
             updateCard();
         }
@@ -374,90 +402,66 @@
             let frontHTML = '';
             let backHTML = '';
             
-            let typeLabel = 'Altres';
-            if (item.type === 'noun') typeLabel = 'Substantiu';
-            if (item.type === 'verb') typeLabel = 'Verb';
+            let typeLabel = item.type === 'noun' ? 'Substantiu' : (item.type === 'verb' ? 'Verb' : 'Altres');
             let typeBadge = `<div class="type-badge">${typeLabel}</div>`;
+            let speakerFront = getSpeakerButton(item);
+            let speakerBack = getSpeakerButton(item);
 
             if (currentMode === 'de-ca') {
-                // Front: Alemany (Article + Paraula + PluralBezeichnung)
                 if (item.type === 'noun') {
                     let suffix = item.pluralSuffix && item.pluralSuffix !== '-' ? `, ${item.pluralSuffix}` : (item.pluralSuffix === '-' ? ', -' : '');
-                    frontHTML = `${typeBadge}<div class="word-main">${getArticleHTML(item.article)} ${item.word}${suffix}</div>`;
+                    frontHTML = `${speakerFront}${typeBadge}<div class="word-main">${getArticleHTML(item.article)} ${item.word}${suffix}</div>`;
                 } else {
-                    frontHTML = `${typeBadge}<div class="word-main">${item.word}</div>`;
+                    frontHTML = `${speakerFront}${typeBadge}<div class="word-main">${item.word}</div>`;
                 }
 
-                // Back: Català, Plural complet i Exemples
                 backHTML = `<div class="word-main">${item.ca}</div>`;
-                if (item.type === 'noun' && item.pluralFull) {
-                    backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
-                }
-                if (item.exDe) {
-                    backHTML += `<div class="example-box">
-                                    <div class="example-de">${item.exDe}</div>
-                                    <div class="example-ca">${item.exCa}</div>
-                                 </div>`;
-                }
+                if (item.type === 'noun' && item.pluralFull) backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
+                if (item.exDe) backHTML += `<div class="example-box"><div class="example-de">${item.exDe}</div><div class="example-ca">${item.exCa}</div></div>`;
             } 
             else if (currentMode === 'ca-de') {
-                // Front: Català
                 frontHTML = `${typeBadge}<div class="word-main">${item.ca}</div>`;
                 
-                // Back: Alemany i Exemples
-                backHTML = `<div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>`;
-                if (item.type === 'noun' && item.pluralFull) {
-                    backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
-                }
-                if (item.exDe) {
-                    backHTML += `<div class="example-box">
-                                    <div class="example-de">${item.exDe}</div>
-                                    <div class="example-ca">${item.exCa}</div>
-                                 </div>`;
-                }
+                backHTML = `${speakerBack}<div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>`;
+                if (item.type === 'noun' && item.pluralFull) backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
+                if (item.exDe) backHTML += `<div class="example-box"><div class="example-de">${item.exDe}</div><div class="example-ca">${item.exCa}</div></div>`;
             }
             else if (currentMode === 'art-pl') {
-                // Front: Alemany (sense article ni plural) + significat en català petit
-                frontHTML = `${typeBadge}
+                let speakerFrontHidden = getSpeakerButton(item, true); 
+                frontHTML = `${speakerFrontHidden}${typeBadge}
                              <div class="word-main">${getArticleHTML(item.article, true)} ${item.word}</div>
                              <div class="plural-text">Plural: ???</div>
                              <div class="word-secondary">${item.ca}</div>`;
                 
-                // Back: Revelar la solució completa
-                backHTML = `<div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>
+                backHTML = `${speakerBack}
+                            <div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>
                             <div class="plural-text">Plural: ${item.pluralFull}</div>`;
             }
 
-            // Girem la targeta a la posició inicial (cara frontal)
             card.classList.remove('is-flipped');
             isFlipped = false;
             
-            // Retardem el canvi de text per no veure com canvia de cop mentre es gira
             setTimeout(() => {
                 cardFront.innerHTML = frontHTML;
                 cardBack.innerHTML = backHTML;
             }, 180); 
         }
 
-        // --- GESTIÓ D'ESDEVENIMENTS ---
-        
+        // Events i control de gestos
         card.addEventListener('click', () => {
             isFlipped = !isFlipped;
             card.classList.toggle('is-flipped', isFlipped);
         });
-
         document.getElementById('prevBtn').addEventListener('click', () => {
             if (currentIndex > 0) currentIndex--;
             else currentIndex = vocab.length - 1;
             updateCard();
         });
-
         document.getElementById('nextBtn').addEventListener('click', () => {
             if (currentIndex < vocab.length - 1) currentIndex++;
             else currentIndex = 0;
             updateCard();
         });
-
         document.getElementById('shuffleBtn').addEventListener('click', () => {
             for (let i = vocab.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -466,37 +470,20 @@
             currentIndex = 0;
             updateCard();
         });
+        modeSelect.addEventListener('change', applyModeFilter);
 
-        modeSelect.addEventListener('change', () => {
-            applyModeFilter();
-        });
-
-        // --- SUPORT SWIPE PER A IPHONE ---
         let touchstartX = 0;
         let touchendX = 0;
-        const SWIPE_THRESHOLD = 50; // Píxels mínims per considerar-ho un lliscament
-
+        const SWIPE_THRESHOLD = 50; 
         document.getElementById('cardContainer').addEventListener('touchstart', e => {
             touchstartX = e.changedTouches[0].screenX;
         }, {passive: true});
-
         document.getElementById('cardContainer').addEventListener('touchend', e => {
             touchendX = e.changedTouches[0].screenX;
-            handleSwipe();
+            if (touchendX < touchstartX - SWIPE_THRESHOLD) document.getElementById('nextBtn').click();
+            if (touchendX > touchstartX + SWIPE_THRESHOLD) document.getElementById('prevBtn').click();
         }, {passive: true});
 
-        function handleSwipe() {
-            if (touchendX < touchstartX - SWIPE_THRESHOLD) {
-                // Lliscar cap a l'esquerra -> Següent
-                document.getElementById('nextBtn').click();
-            }
-            if (touchendX > touchstartX + SWIPE_THRESHOLD) {
-                // Lliscar cap a la dreta -> Anterior
-                document.getElementById('prevBtn').click();
-            }
-        }
-
-        // Iniciar
         window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
