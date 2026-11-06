@@ -1,1684 +1,503 @@
 <!DOCTYPE html>
-<html lang="ca" class="dark">
+<html lang="ca">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Deutsch A1" />
-  <title>Deutsch A1 · Netzwerk neu Flashcards</title>
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
-            mono: ['"SF Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace']
-          }
+    <meta charset="UTF-8">
+    <!-- Optimització iPhone: viewport-fit=cover i deshabilitar zoom per a comportament d'App nativa -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Alemany A1 - Vocabulari</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #f1f5f9 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --der-color: #0ea5e9; /* Blau brillant */
+            --die-color: #e11d48; /* Vermell/Rosa intens */
+            --das-color: #10b981; /* Verd maragda */
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
-      }
-    };
-  </script>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  <!-- Google Fonts Inter fallback -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding-top: var(--safe-top);
+            padding-bottom: var(--safe-bottom);
+        }
 
-  <style>
-    /* Configuració nativa d'iPhone PWA i prevenció d'overscroll */
-    :root {
-      --sat: env(safe-area-inset-top, 0px);
-      --sab: env(safe-area-inset-bottom, 0px);
-      --sal: env(safe-area-inset-left, 0px);
-      --sar: env(safe-area-inset-right, 0px);
-    }
+        /* --- HEADER & CONTROLS (Glassmorphism) --- */
+        header {
+            padding: 16px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            letter-spacing: -0.3px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        select, button {
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(0,0,0,0.08);
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: white;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+        }
+        select {
+            appearance: none;
+            padding-right: 36px;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231e293b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px top 50%;
+            background-size: 10px auto;
+        }
+        select:active { background-color: #f8fafc; }
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        button:active {
+            background: var(--primary-hover);
+            transform: scale(0.96);
+        }
+        
+        /* Barra de progrés */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: rgba(0,0,0,0.06);
+            margin-top: 18px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    * {
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      user-select: none;
-      box-sizing: border-box;
-    }
+        /* --- 3D CARD SCENE --- */
+        .card-container {
+            flex: 1;
+            perspective: 1500px;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .card {
+            width: 100%;
+            height: 100%;
+            max-height: 520px;
+            position: relative;
+            /* Animació súper suau estil iOS */
+            transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            background: var(--card-bg);
+            border-radius: 32px;
+            box-shadow: 0 12px 36px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 32px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background: #fafcff;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
 
-    html, body {
-      width: 100%;
-      height: 100dvh;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      overscroll-behavior: none;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
-    }
+        /* --- TIPOGRAFIA INTERNA --- */
+        .type-badge {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 12px;
+            color: var(--text-muted);
+        }
 
-    /* Contenidor principal estil iPhone */
-    .iphone-shell {
-      height: 100dvh;
-      padding-top: max(var(--sat), 10px);
-      padding-bottom: max(var(--sab), 12px);
-      padding-left: max(var(--sal), 14px);
-      padding-right: max(var(--sar), 14px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      max-width: 460px;
-      margin: 0 auto;
-      position: relative;
-    }
+        .word-main {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.15;
+            word-break: break-word;
+            letter-spacing: -0.5px;
+        }
+        .word-secondary {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .plural-text {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 24px;
+            background: #f8fafc;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .example-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 18px;
+            width: 100%;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            text-align: left;
+            border-left: 4px solid var(--primary);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+            margin-top: 10px;
+        }
+        .example-de {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+        .example-ca {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
-    /* Perspectives 3D per a la Flashcard */
-    .perspective-container {
-      perspective: 1200px;
-      -webkit-perspective: 1200px;
-    }
+        /* Colors dels articles */
+        .art-der { color: var(--der-color); }
+        .art-die { color: var(--die-color); }
+        .art-das { color: var(--das-color); }
+        .hidden-art { color: #cbd5e1; } /* Per al mode ocult */
+        
+        /* --- NAVEGACIÓ INFERIOR --- */
+        .footer-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 32px 25px;
+        }
+        .nav-btn {
+            background: white;
+            color: var(--text-main);
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .nav-btn:active {
+            background: #f1f5f9;
+            transform: scale(0.92);
+        }
+        
+        .stats-counter {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+            background: rgba(255,255,255,0.6);
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
 
-    .card-3d {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      -webkit-transform-style: preserve-3d;
-      transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform;
-    }
-
-    .card-3d.is-flipped {
-      transform: rotateY(180deg);
-      -webkit-transform: rotateY(180deg);
-    }
-
-    .card-face {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 1.75rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-    }
-
-    .card-face-back {
-      transform: rotateY(180deg);
-      -webkit-transform: rotateY(180deg);
-    }
-
-    /* Colors DaF oficials per a articles alemanys */
-    .daf-der {
-      color: #3b82f6;
-      background-color: rgba(59, 130, 246, 0.12);
-      border-color: rgba(59, 130, 246, 0.35);
-    }
-    .daf-die {
-      color: #f43f5e;
-      background-color: rgba(244, 63, 94, 0.12);
-      border-color: rgba(244, 63, 94, 0.35);
-    }
-    .daf-das {
-      color: #10b981;
-      background-color: rgba(16, 185, 129, 0.12);
-      border-color: rgba(16, 185, 129, 0.35);
-    }
-
-    /* Segells de lliscament (Swipe Stamps) */
-    .swipe-badge {
-      opacity: 0;
-      transition: opacity 0.12s ease;
-      pointer-events: none;
-    }
-
-    /* Scrollbar suau per als modals */
-    .custom-scroll {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .custom-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* Animació subtil d'entrada de carta */
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.94) translateY(8px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    .animate-card-in {
-      animation: popIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-  </style>
+    </style>
+    <!-- Carreguem el fitxer extern (vocab.js). Si falla o està bloquejat, l'App ho detecta i utilitza un Fallback. -->
+    <script src="vocab.js"></script>
 </head>
+<body>
 
-<body class="bg-slate-100 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
-
-  <!-- Contenidor Principal Mòbil (iPhone View) -->
-  <main class="iphone-shell">
-
-    <!-- 1. CAPÇALERA SUPERIOR COMPACTA -->
-    <header class="flex flex-col gap-2 shrink-0">
-      <div class="flex items-center justify-between">
-        <!-- Títol i estat del fitxer vocab.js -->
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400 via-red-500 to-slate-900 flex items-center justify-center shadow-md shadow-red-500/10 font-extrabold text-white text-sm tracking-tight">
-            DE
-          </div>
-          <div>
-            <div class="flex items-center gap-1.5">
-              <h1 class="font-bold text-base tracking-tight leading-none">Netzwerk neu A1</h1>
-              <span id="deckSourceBadge" class="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 border border-indigo-500/25">
-                Base
-              </span>
-            </div>
-            <p id="headerSubStats" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-              Carregant vocabulari...
-            </p>
-          </div>
+    <header>
+        <h1>Alemany A1 - Netzwerk neu</h1>
+        <div class="controls">
+            <select id="modeSelect">
+                <option value="de-ca">DE ➔ CA (Reconeixement)</option>
+                <option value="ca-de">CA ➔ DE (Producció)</option>
+                <option value="art-pl">Art. + Plural (Només Noms)</option>
+            </select>
+            <button id="shuffleBtn">🔀 Remenar</button>
         </div>
-
-        <!-- Botons d'acció ràpida a la capçalera -->
-        <div class="flex items-center gap-1.5">
-          <!-- Cercador / Llista del vocabulari -->
-          <button id="btnOpenDictionary" type="button" aria-label="Llista de paraules"
-            class="p-2 rounded-xl bg-white/80 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-            </svg>
-          </button>
-
-          <!-- Filtres -->
-          <button id="btnOpenFilters" type="button" aria-label="Filtres"
-            class="relative p-2 rounded-xl bg-white/80 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition flex items-center gap-1 text-xs font-semibold px-2.5">
-            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-            </svg>
-            <span>Filtres</span>
-            <span id="activeFilterDot" class="hidden w-2 h-2 rounded-full bg-indigo-500"></span>
-          </button>
-
-          <!-- Configuració / Tema / Info vocab.js -->
-          <button id="btnOpenSettings" type="button" aria-label="Opcions"
-            class="p-2 rounded-xl bg-white/80 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 active:scale-95 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressFill"></div>
         </div>
-      </div>
-
-      <!-- Control Segmentat d'iOS per als 3 Modes d'Estudi -->
-      <div class="grid grid-cols-3 p-1 rounded-2xl bg-slate-200/85 dark:bg-slate-900 border border-slate-300/50 dark:border-slate-800/90 text-xs font-semibold">
-        <button type="button" data-mode="de-ca" class="mode-btn py-1.5 px-2 rounded-xl transition-all text-center truncate">
-          DE ➔ CA
-        </button>
-        <button type="button" data-mode="ca-de" class="mode-btn py-1.5 px-2 rounded-xl transition-all text-center truncate">
-          CA ➔ DE
-        </button>
-        <button type="button" data-mode="noun-quiz" class="mode-btn py-1.5 px-2 rounded-xl transition-all text-center truncate">
-          Art. + Plural
-        </button>
-      </div>
-
-      <!-- Barra de progrés i comptadors ràpids -->
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center justify-between text-[11px] font-semibold">
-          <div class="flex items-center gap-2">
-            <span id="currentCardCounter" class="text-slate-700 dark:text-slate-200 font-mono">1 / 120</span>
-            <span id="activeFilterSummary" class="text-slate-400 dark:text-slate-500 truncate max-w-[165px]">Tots els temes</span>
-          </div>
-          <div class="flex items-center gap-2.5">
-            <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <span id="statLearnedCount">0</span> apreses
-            </span>
-            <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-              <span id="statReviewCount">0</span> repàs
-            </span>
-          </div>
-        </div>
-        <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex">
-          <div id="progressBarLearned" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
-          <div id="progressBarReview" class="h-full bg-amber-500 transition-all duration-300" style="width: 0%"></div>
-        </div>
-      </div>
     </header>
 
-    <!-- 2. ZONA CENTRAL DE LA TARGETA (FLASHCARD 3D) -->
-    <section class="flex-1 my-2.5 relative flex items-center justify-center min-h-0">
-      
-      <!-- Estat buit quan un filtre no té cartes -->
-      <div id="emptyDeckState" class="hidden w-full h-full rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 flex-col items-center justify-center text-center gap-3 shadow-lg">
-        <div class="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="flashcard">
+            <div class="card-face card-front" id="cardFront">
+                <!-- S'omple per JS -->
+            </div>
+            <div class="card-face card-back" id="cardBack">
+                <!-- S'omple per JS -->
+            </div>
         </div>
-        <h2 class="text-lg font-bold">Cap targeta en aquest filtre!</h2>
-        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed">
-          Has completat totes les paraules d'aquesta selecció o bé no hi ha cap paraula que coincideixi amb els filtres actuals.
-        </p>
-        <button id="btnResetFiltersFromEmpty" type="button"
-          class="mt-1 px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-semibold shadow-md shadow-indigo-500/20 active:scale-95 transition">
-          Mostrar totes les paraules
-        </button>
-      </div>
+    </div>
 
-      <!-- Contenidor 3D de la Flashcard -->
-      <div id="cardViewport" class="w-full h-full perspective-container relative">
-        <div id="flashcardElement" class="card-3d cursor-pointer">
+    <div class="footer-controls">
+        <button class="nav-btn" id="prevBtn">←</button>
+        <div class="stats-counter" id="statsDisplay">0 / 0</div>
+        <button class="nav-btn" id="nextBtn">→</button>
+    </div>
 
-          <!-- ================= CARA FRONTAL ================= -->
-          <div class="card-face bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800/90 shadow-xl shadow-slate-900/5 dark:shadow-black/40 p-5">
+    <script>
+        // Dades d'emergència en cas de que iOS bloquegi el fitxer local
+        const FALLBACK_VOCAB = [
+            { id: "fb_1", type: "noun", article: "der", word: "Apfel", pluralSuffix: "¨-", pluralFull: "die Äpfel", forms: "der Apfel, ¨-", ca: "poma", exDe: "Ich esse einen Apfel.", exCa: "Menjo una poma." },
+            { id: "fb_2", type: "noun", article: "das", word: "Buch", pluralSuffix: "¨-er", pluralFull: "die Bücher", forms: "das Buch, ¨-er", ca: "llibre", exDe: "Das Buch ist interessant.", exCa: "El llibre és interessant." },
+            { id: "fb_3", type: "noun", article: "die", word: "Frau", pluralSuffix: "-en", pluralFull: "die Frauen", forms: "die Frau, -en", ca: "dona", exDe: "Die Frau heißt Anna.", exCa: "La dona es diu Anna." },
+            { id: "fb_4", type: "verb", article: "", word: "gehen", pluralSuffix: "", pluralFull: "", forms: "gehen (verb)", ca: "anar", exDe: "Ich gehe nach Hause.", exCa: "Vaig cap a casa." }
+        ];
+
+        let vocab = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let currentMode = 'de-ca';
+
+        const card = document.getElementById('flashcard');
+        const cardFront = document.getElementById('cardFront');
+        const cardBack = document.getElementById('cardBack');
+        const modeSelect = document.getElementById('modeSelect');
+        const statsDisplay = document.getElementById('statsDisplay');
+        const progressFill = document.getElementById('progressFill');
+
+        function initApp() {
+            if (typeof window.VOCAB_DATA !== 'undefined' && Array.isArray(window.VOCAB_DATA) && window.VOCAB_DATA.length > 0) {
+                vocab = [...window.VOCAB_DATA];
+            } else {
+                vocab = [...FALLBACK_VOCAB];
+                console.warn("Fitxer vocab.js no trobat o bloquejat. Carregant dades de prova.");
+            }
             
-            <!-- Segells dinàmics quan es llisca amb el dit -->
-            <div id="stampRightFront" class="swipe-badge absolute top-14 left-5 z-20 px-3 py-1 rounded-xl border-2 border-emerald-500 text-emerald-500 font-extrabold text-xs tracking-wider uppercase -rotate-12 bg-white/90 dark:bg-slate-900/90">
-              HO SÉ ✓
-            </div>
-            <div id="stampLeftFront" class="swipe-badge absolute top-14 right-5 z-20 px-3 py-1 rounded-xl border-2 border-amber-500 text-amber-500 font-extrabold text-xs tracking-wider uppercase rotate-12 bg-white/90 dark:bg-slate-900/90">
-              REPASSAR ↻
-            </div>
-
-            <!-- Capçalera de la carta frontal -->
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span id="frontKapitelBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                  Kapitel 1
-                </span>
-                <span id="frontCategoryBadge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                  Substantiu
-                </span>
-                <span id="frontStatusBadge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full"></span>
-              </div>
-
-              <!-- Botó d'àudio a la cara frontal -->
-              <button id="btnSpeakFront" type="button" aria-label="Escoltar pronunciació"
-                class="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800/90 hover:bg-indigo-500/15 text-slate-700 dark:text-slate-200 flex items-center justify-center active:scale-90 transition shrink-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-              </button>
-            </div>
-
-            <!-- Cos central de la cara frontal -->
-            <div class="flex-1 flex flex-col items-center justify-center text-center px-2 my-2">
-              <p id="frontDirectionHint" class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                Què significa en català?
-              </p>
-
-              <!-- Text principal frontal -->
-              <div id="frontPrimaryContainer" class="flex flex-col items-center justify-center gap-2 w-full">
-                <div id="frontMainWord" class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-                  der Tisch, -e
-                </div>
-                <p id="frontSubHint" class="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-                  Substantiu · Toca per veure la traducció i el plural
-                </p>
-              </div>
-
-              <!-- Mini-botons d'autoavaluació d'article en el mode "Test Article/Plural" -->
-              <div id="frontArticleQuizPills" class="hidden mt-5 flex-col items-center gap-2 w-full max-w-[260px]">
-                <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Toca l'article correcte o gira la carta:</span>
-                <div class="grid grid-cols-3 gap-2 w-full">
-                  <button type="button" data-guess="der" class="article-guess-btn py-2 rounded-xl font-bold text-sm border border-blue-500/40 bg-blue-500/10 text-blue-500 active:scale-95 transition">
-                    der
-                  </button>
-                  <button type="button" data-guess="die" class="article-guess-btn py-2 rounded-xl font-bold text-sm border border-rose-500/40 bg-rose-500/10 text-rose-500 active:scale-95 transition">
-                    die
-                  </button>
-                  <button type="button" data-guess="das" class="article-guess-btn py-2 rounded-xl font-bold text-sm border border-emerald-500/40 bg-emerald-500/10 text-emerald-500 active:scale-95 transition">
-                    das
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Peu de la cara frontal -->
-            <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-              <span>Llisca ⬅️ Repassar · ➡️ Ho sé</span>
-              <span class="flex items-center gap-1 font-semibold text-indigo-500 dark:text-indigo-400">
-                Toca per girar
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-              </span>
-            </div>
-          </div>
-
-          <!-- ================= CARA POSTERIOR (RESPOSTA COMPLETA AMB PLURALBEZEICHNUNG) ================= -->
-          <div class="card-face card-face-back bg-white dark:bg-slate-900 border-2 border-indigo-500/30 dark:border-indigo-500/30 shadow-xl shadow-slate-900/5 dark:shadow-black/40 p-5">
-
-            <!-- Capçalera posterior -->
-            <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-1.5">
-                <span id="backKapitelBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                  Kapitel 1
-                </span>
-                <span id="backArticleLegend" class="hidden text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border">
-                  Masculí (der)
-                </span>
-              </div>
-
-              <!-- Botó d'àudio de la paraula alemanya (i plural) -->
-              <button id="btnSpeakBackWord" type="button" aria-label="Escoltar alemany"
-                class="px-3 py-1.5 rounded-2xl bg-indigo-600 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm shadow-indigo-500/30 active:scale-95 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                </svg>
-                <span>Escoltar</span>
-              </button>
-            </div>
-
-            <!-- Bloc Central: Alemany + Article + Pluralbezeichnung + Traducció -->
-            <div class="flex-1 flex flex-col items-center justify-center text-center my-1 overflow-y-auto custom-scroll">
-              
-              <!-- Contenidor destacat per al Substantiu amb Determinant + Pluralbezeichnung -->
-              <div id="backGermanDisplay" class="w-full flex flex-col items-center justify-center">
-                <!-- Es renderitza dinàmicament segons si és Substantiu o Verb/Altre -->
-              </div>
-
-              <!-- Traducció al català ben clara (sense articles ni pronoms) -->
-              <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-800/80 w-full">
-                <p class="text-[10px] uppercase tracking-wider font-bold text-indigo-500 dark:text-indigo-400">Traducció (Català)</p>
-                <p id="backCatalanMeaning" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-0.5 tracking-tight">
-                  taula
-                </p>
-              </div>
-
-              <!-- Frase d'exemple A1 (Alemany + Català + Àudio de la frase) -->
-              <div class="mt-3 w-full rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 p-3 text-left relative">
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <p id="backExampleDe" class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 leading-snug">
-                      Der Tisch ist groß und modern.
-                    </p>
-                    <p id="backExampleCa" class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 leading-snug">
-                      La taula és gran i moderna.
-                    </p>
-                  </div>
-                  <button id="btnSpeakExample" type="button" aria-label="Escoltar frase d'exemple"
-                    class="p-2 rounded-xl bg-white dark:bg-slate-700/80 text-slate-600 dark:text-slate-200 border border-slate-200 dark:border-slate-600 active:scale-90 transition shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Peu de la cara posterior amb llegenda de colors DaF -->
-            <div class="flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-              <div class="flex items-center gap-2 font-semibold">
-                <span class="text-blue-500">● der (m)</span>
-                <span class="text-rose-500">● die (f)</span>
-                <span class="text-emerald-500">● das (n)</span>
-              </div>
-              <span>Toca per tornar a girar</span>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. BARRA INFERIOR DE CONTROLS D'APRENENTATGE (ergonomia iPhone una mà) -->
-    <footer class="shrink-0 flex flex-col gap-2">
-      <div class="grid grid-cols-5 gap-2 items-center">
-        <!-- Botó Anterior -->
-        <button id="btnPrevCard" type="button" aria-label="Targeta anterior"
-          class="col-span-1 h-12 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 active:scale-95 transition shadow-sm">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-
-        <!-- Botó Repassar (Swipe Left equivalent) -->
-        <button id="btnMarkReview" type="button"
-          class="col-span-2 h-12 rounded-2xl bg-amber-500/15 hover:bg-amber-500/20 border border-amber-500/35 text-amber-600 dark:text-amber-400 font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 active:scale-95 transition shadow-sm">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span>Repassar</span>
-        </button>
-
-        <!-- Botó Ho sé / Apresa (Swipe Right equivalent) -->
-        <button id="btnMarkLearned" type="button"
-          class="col-span-2 h-12 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 active:scale-95 transition shadow-md shadow-emerald-500/25">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-          <span>Ho sé!</span>
-        </button>
-      </div>
-    </footer>
-
-  </main>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL 1: FILTRES (BOTTOM SHEET ESTIL iOS)                             -->
-  <!-- ===================================================================== -->
-  <div id="modalFilters" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end justify-center">
-    <div class="w-full max-w-[460px] bg-white dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 p-5 pb-8 shadow-2xl max-h-[88dvh] flex flex-col">
-      <div class="w-10 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-3"></div>
-      
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-        <h3 class="text-base font-bold">Filtra les Flashcards</h3>
-        <button id="btnCloseFilters" type="button" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-lg bg-indigo-500/10">
-          Fet
-        </button>
-      </div>
-
-      <div class="custom-scroll space-y-4 my-3 pr-1">
-        <!-- Filtre per Kapitel (Netzwerk neu A1 + Freqüència) -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-            Unitat (Netzwerk neu A1 & Top 1000)
-          </label>
-          <div id="filterKapitelGroup" class="grid grid-cols-2 gap-2 text-xs font-semibold">
-            <button type="button" data-kapitel="all" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Tots els blocs</button>
-            <button type="button" data-kapitel="k1-3" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Kapitel 1 – 3</button>
-            <button type="button" data-kapitel="k4-6" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Kapitel 4 – 6</button>
-            <button type="button" data-kapitel="k7-9" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Kapitel 7 – 9</button>
-            <button type="button" data-kapitel="k10-12" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Kapitel 10 – 12</button>
-            <button type="button" data-kapitel="freq" class="filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate">Top Freqüència</button>
-          </div>
-        </div>
-
-        <!-- Filtre per Categoria Gramatical -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-            Categoria Gramatical
-          </label>
-          <div id="filterCategoryGroup" class="grid grid-cols-2 gap-2 text-xs font-semibold">
-            <button type="button" data-cat="all" class="filter-chip-cat py-2 px-3 rounded-xl border text-left">Totes les categories</button>
-            <button type="button" data-cat="noun" class="filter-chip-cat py-2 px-3 rounded-xl border text-left">Substantius (Art.+Pl.)</button>
-            <button type="button" data-cat="verb" class="filter-chip-cat py-2 px-3 rounded-xl border text-left">Verbs</button>
-            <button type="button" data-cat="other" class="filter-chip-cat py-2 px-3 rounded-xl border text-left">Adjectius / Altres</button>
-          </div>
-        </div>
-
-        <!-- Filtre per Estat de Domini -->
-        <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
-            Estat d'Aprenentatge
-          </label>
-          <div id="filterStatusGroup" class="grid grid-cols-3 gap-2 text-xs font-semibold">
-            <button type="button" data-status="all" class="filter-chip-status py-2 px-2.5 rounded-xl border text-center">Totes</button>
-            <button type="button" data-status="pending" class="filter-chip-status py-2 px-2.5 rounded-xl border text-center">Per repassar</button>
-            <button type="button" data-status="learned" class="filter-chip-status py-2 px-2.5 rounded-xl border text-center">Apreses</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Accions ràpides de baralla -->
-      <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
-        <button id="btnShuffleDeck" type="button"
-          class="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition">
-          <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span>Barrejar baralla</span>
-        </button>
-        <button id="btnClearAllFilters" type="button"
-          class="py-2.5 px-4 rounded-xl bg-indigo-600 text-white text-xs font-bold active:scale-95 transition">
-          Restablir filtres
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL 2: CERCADOR I DICCIONARI COMPLET DEL DECK                       -->
-  <!-- ===================================================================== -->
-  <div id="modalDictionary" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end justify-center">
-    <div class="w-full max-w-[460px] bg-white dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 p-5 pb-6 shadow-2xl h-[86dvh] flex flex-col">
-      <div class="w-10 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-3 shrink-0"></div>
-      
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-        <div>
-          <h3 class="text-base font-bold">Llista i Cerca de Vocabulari</h3>
-          <p id="dictTotalCountLabel" class="text-[11px] text-slate-400">Toca qualsevol paraula per anar a la seva targeta</p>
-        </div>
-        <button id="btnCloseDictionary" type="button" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-lg bg-indigo-500/10">
-          Tancar
-        </button>
-      </div>
-
-      <!-- Barra de cerca -->
-      <div class="my-3 shrink-0">
-        <input id="dictSearchInput" type="search" placeholder="Cerca en alemany, català o Kapitel (ex: Tisch, taula, K3)..."
-          class="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:border-indigo-500" />
-      </div>
-
-      <!-- Llista desplaçable -->
-      <div id="dictionaryListContainer" class="flex-1 custom-scroll divide-y divide-slate-100 dark:divide-slate-800/80 pr-1">
-        <!-- Es pobla dinàmicament -->
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- MODAL 3: CONFIGURACIÓ, CONNEXIÓ VOCAB.JS I GUIA PLURALBEZEICHNUNG     -->
-  <!-- ===================================================================== -->
-  <div id="modalSettings" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end justify-center">
-    <div class="w-full max-w-[460px] bg-white dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 p-5 pb-8 shadow-2xl max-h-[88dvh] flex flex-col">
-      <div class="w-10 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-3 shrink-0"></div>
-
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-        <h3 class="text-base font-bold">Configuració i Fitxer vocab.js</h3>
-        <button id="btnCloseSettings" type="button" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-lg bg-indigo-500/10">
-          Tancar
-        </button>
-      </div>
-
-      <div class="custom-scroll space-y-4 my-3 pr-1 text-xs">
-        <!-- Tema clar / fosc -->
-        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-800">
-          <div>
-            <p class="font-bold text-sm">Mode Fosc / Clar (iOS)</p>
-            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Canvia l'aparença visual de l'aplicació</p>
-          </div>
-          <button id="btnToggleTheme" type="button"
-            class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs active:scale-95 transition">
-            Canviar tema
-          </button>
-        </div>
-
-        <!-- Estat d'arquitectura de 2 fitxers: index.html + vocab.js -->
-        <div class="p-3.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-indigo-600 dark:text-indigo-300 text-sm">Estat de `vocab.js`</span>
-            <span id="settingsVocabStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-600 text-white">
-              Comprovant...
-            </span>
-          </div>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]">
-            Aquest <code class="font-mono font-bold">index.html</code> ja inclou l'etiqueta <code class="font-mono font-bold">&lt;script src="vocab.js"&gt;&lt;/script&gt;</code>. Quan col·loquis el fitxer <code class="font-mono font-bold">vocab.js</code> a la mateixa carpeta amb <code class="font-mono font-bold">window.VOCAB_DATA = [...]</code>, es carregarà automàticament amb les 750–1000 paraules.
-          </p>
-        </div>
-
-        <!-- Guia ràpida de Pluralbezeichnung en alemany -->
-        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-800 space-y-2">
-          <p class="font-bold text-sm">Llegenda de Pluralbezeichnung (Netzwerk neu)</p>
-          <div class="grid grid-cols-2 gap-1.5 text-[11px] font-mono">
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>-e</b> : der Tisch ➔ die Tische</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>¨-e</b> : der Stuhl ➔ die Stühle</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>-er</b> : das Kind ➔ die Kinder</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>¨-er</b> : das Buch ➔ die Bücher</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>-en/-n</b> : die Frau ➔ die Frauen</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>-s</b> : das Auto ➔ die Autos</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>-</b> : das Zimmer ➔ die Zimmer</div>
-            <div class="p-1.5 rounded-lg bg-white dark:bg-slate-900"><b>¨-</b> : der Apfel ➔ die Äpfel</div>
-          </div>
-        </div>
-
-        <!-- Reiniciar el progrés guardat a l'iPhone -->
-        <div class="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 flex items-center justify-between gap-2">
-          <div>
-            <p class="font-bold text-rose-600 dark:text-rose-400 text-sm">Esborrar progrés d'estudi</p>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400">Reinicia el comptador de paraules apreses i de repàs</p>
-          </div>
-          <button id="btnRequestResetProgress" type="button"
-            class="px-3 py-2 rounded-xl bg-rose-600 text-white font-bold text-xs shrink-0 active:scale-95 transition">
-            Reiniciar
-          </button>
-        </div>
-
-        <!-- Confirmació integrada sense usar confirm() natiu -->
-        <div id="resetConfirmationBox" class="hidden p-3.5 rounded-2xl bg-rose-600 text-white space-y-2">
-          <p class="font-bold text-xs">Segur que vols posar a zero totes les estadístiques d'aprenentatge?</p>
-          <div class="flex items-center justify-end gap-2">
-            <button id="btnCancelReset" type="button" class="px-3 py-1.5 rounded-lg bg-white/20 font-semibold text-xs">Cancel·lar</button>
-            <button id="btnConfirmReset" type="button" class="px-3 py-1.5 rounded-lg bg-white text-rose-700 font-extrabold text-xs">Sí, esborra-ho</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- 1. CÀRREGA DEL FITXER EXTERN DE VOCABULARI (750-1000 PARAULES)        -->
-  <!-- Quan tinguis el fitxer vocab.js a la mateixa carpeta, es carregarà ací -->
-  <!-- ===================================================================== -->
-  <script src="vocab.js"></script>
-
-  <!-- ===================================================================== -->
-  <!-- 2. SCRIPT PRINCIPAL DE L'APLICACIÓ + BASE DE DADES FALLBACK A1        -->
-  <!-- ===================================================================== -->
-  <script>
-    /**
-     * Funció auxiliar per netejar qualsevol article o pronom innecessari en català
-     * (tant de la base interna com del fitxer extern vocab.js).
-     * Ex: "la taula" -> "taula", "l'habitació" -> "habitació", "l'amic / el xicot" -> "amic / xicot"
-     */
-    function cleanCatalan(text) {
-      if (!text) return "";
-      return String(text)
-        .split("/")
-        .map(part =>
-          part
-            .trim()
-            .replace(/^(el|la|els|les|un|una)\s+/i, "")
-            .replace(/^l['’]/i, "")
-            .trim()
-        )
-        .join(" / ");
-    }
-
-    /**
-     * Base de dades integrada (FALLBACK_VOCAB) amb 150 paraules clau
-     * de "Netzwerk neu A1" (Kapitel 1 a 12) i el Top de freqüència alemany.
-     * Totes les traduccions al català estan netes d'articles i pronoms.
-     */
-    const FALLBACK_VOCAB = [
-      // ==================== KAPITEL 1: Guten Tag! ====================
-      { id: "k1_01", kapitel: "K1", block: "k1-3", type: "noun", article: "der", word: "Name", pluralSuffix: "-n", pluralFull: "die Namen", forms: "der Name, -n", ca: "nom", exDe: "Mein Name ist Thomas.", exCa: "El meu nom és Thomas." },
-      { id: "k1_02", kapitel: "K1", block: "k1-3", type: "noun", article: "der", word: "Vorname", pluralSuffix: "-n", pluralFull: "die Vornamen", forms: "der Vorname, -n", ca: "nom de pila", exDe: "Wie ist Ihr Vorname?", exCa: "Quin és el seu nom de pila?" },
-      { id: "k1_03", kapitel: "K1", block: "k1-3", type: "noun", article: "der", word: "Nachname", pluralSuffix: "-n", pluralFull: "die Nachnamen", forms: "der Nachname, -n", ca: "cognom", exDe: "Wie schreibt man Ihren Nachnamen?", exCa: "Com s'escriu el seu cognom?" },
-      { id: "k1_04", kapitel: "K1", block: "k1-3", type: "noun", article: "das", word: "Land", pluralSuffix: "¨-er", pluralFull: "die Länder", forms: "das Land, ¨-er", ca: "país", exDe: "Aus welchem Land kommst du?", exCa: "De quin país véns?" },
-      { id: "k1_05", kapitel: "K1", block: "k1-3", type: "noun", article: "die", word: "Stadt", pluralSuffix: "¨-e", pluralFull: "die Städte", forms: "die Stadt, ¨-e", ca: "ciutat", exDe: "Berlin ist eine große Stadt.", exCa: "Berlín és una ciutat gran." },
-      { id: "k1_06", kapitel: "K1", block: "k1-3", type: "noun", article: "die", word: "Sprache", pluralSuffix: "-n", pluralFull: "die Sprachen", forms: "die Sprache, -n", ca: "llengua / idioma", exDe: "Welche Sprachen sprichst du?", exCa: "Quins idiomes parles?" },
-      { id: "k1_07", kapitel: "K1", block: "k1-3", type: "noun", article: "die", word: "Nummer", pluralSuffix: "-n", pluralFull: "die Nummern", forms: "die Nummer, -n", ca: "número", exDe: "Wie ist deine Telefonnummer?", exCa: "Quin és el teu número de telèfon?" },
-      { id: "k1_08", kapitel: "K1", block: "k1-3", type: "verb", word: "heißen", forms: "heißt · hat geheißen", ca: "dir-se (nom)", exDe: "Ich heiße Anna. Und wie heißt du?", exCa: "Em dic Anna. I com et dius tu?" },
-      { id: "k1_09", kapitel: "K1", block: "k1-3", type: "verb", word: "kommen", forms: "kommt · ist gekommen", ca: "venir", exDe: "Ich komme aus Katalonien.", exCa: "Vinc de Catalunya." },
-      { id: "k1_10", kapitel: "K1", block: "k1-3", type: "verb", word: "wohnen", forms: "wohnt · hat gewohnt", ca: "viure / residir", exDe: "Wir wohnen jetzt in München.", exCa: "Ara vivim a Munic." },
-      { id: "k1_11", kapitel: "K1", block: "k1-3", type: "verb", word: "sprechen", forms: "spricht · hat gesprochen", ca: "parlar", exDe: "Er spricht gut Deutsch und Englisch.", exCa: "Ell parla bé alemany i anglès." },
-      { id: "k1_12", kapitel: "K1", block: "k1-3", type: "verb", word: "sein", forms: "ist · ist gewesen", ca: "ser / estar", exDe: "Das ist mein Freund Lukas.", exCa: "Aquest és el meu amic Lukas." },
-      { id: "k1_13", kapitel: "K1", block: "k1-3", type: "Verb", type: "verb", word: "buchstabieren", forms: "buchstabiert · hat buchstabiert", ca: "lletrejar", exDe: "Können Sie das bitte buchstabieren?", exCa: "Ho pot lletrejar, si us plau?" },
-
-      // ==================== KAPITEL 2: Freunde, Kollegen und ich ====================
-      { id: "k2_01", kapitel: "K2", block: "k1-3", type: "noun", article: "der", word: "Freund", pluralSuffix: "-e", pluralFull: "die Freunde", forms: "der Freund, -e", ca: "amic / xicot", exDe: "Das ist ein guter Freund von mir.", exCa: "Aquest és un bon amic meu." },
-      { id: "k2_02", kapitel: "K2", block: "k1-3", type: "noun", article: "die", word: "Freundin", pluralSuffix: "-nen", pluralFull: "die Freundinnen", forms: "die Freundin, -nen", ca: "amiga / xicota", exDe: "Meine Freundin wohnt in Hamburg.", exCa: "La meva amiga viu a Hamburg." },
-      { id: "k2_03", kapitel: "K2", block: "k1-3", type: "noun", article: "der", word: "Arzt", pluralSuffix: "¨-e", pluralFull: "die Ärzte", forms: "der Arzt, ¨-e", ca: "metge", exDe: "Mein Bruder arbeitet als Arzt.", exCa: "El meu germà treballa de metge." },
-      { id: "k2_04", kapitel: "K2", block: "k1-3", type: "noun", article: "der", word: "Lehrer", pluralSuffix: "-", pluralFull: "die Lehrer", forms: "der Lehrer, -", ca: "professor / mestre", exDe: "Der Lehrer erklärt die Grammatik.", exCa: "El professor explica la gramàtica." },
-      { id: "k2_05", kapitel: "K2", block: "k1-3", type: "noun", article: "das", word: "Buch", pluralSuffix: "¨-er", pluralFull: "die Bücher", forms: "das Buch, ¨-er", ca: "llibre", exDe: "Ich lese gern ein gutes Buch.", exCa: "M'agrada llegir un bon llibre." },
-      { id: "k2_06", kapitel: "K2", block: "k1-3", type: "noun", article: "die", word: "Arbeit", pluralSuffix: "-en", pluralFull: "die Arbeiten", forms: "die Arbeit, -en", ca: "feina / treball", exDe: "Die Arbeit macht mir viel Spaß.", exCa: "La feina m'agrada molt." },
-      { id: "k2_07", kapitel: "K2", block: "k1-3", type: "noun", article: "der", word: "Beruf", pluralSuffix: "-e", pluralFull: "die Berufe", forms: "der Beruf, -e", ca: "professió / ofici", exDe: "Was sind Sie von Beruf?", exCa: "Quina és la seva professió?" },
-      { id: "k2_08", kapitel: "K2", block: "k1-3", type: "noun", article: "das", word: "Wochenende", pluralSuffix: "-n", pluralFull: "die Wochenenden", forms: "das Wochenende, -n", ca: "cap de setmana", exDe: "Am Wochenende habe ich frei.", exCa: "El cap de setmana tinc festa." },
-      { id: "k2_09", kapitel: "K2", block: "k1-3", type: "verb", word: "arbeiten", forms: "arbeitet · hat gearbeitet", ca: "treballar", exDe: "Wo arbeitest du?", exCa: "On treballes?" },
-      { id: "k2_10", kapitel: "K2", block: "k1-3", type: "verb", word: "lesen", forms: "liest · hat gelesen", ca: "llegir", exDe: "Liest du gern Bücher am Abend?", exCa: "T'agrada llegir llibres al vespre?" },
-      { id: "k2_11", kapitel: "K2", block: "k1-3", type: "verb", word: "haben", forms: "hat · hat gehabt", ca: "tenir", exDe: "Hast du heute Abend Zeit?", exCa: "Tens temps aquest vespre?" },
-      { id: "k2_12", kapitel: "K2", block: "k1-3", type: "noun", article: "das", word: "Hobby", pluralSuffix: "-s", pluralFull: "die Hobbys", forms: "das Hobby, -s", ca: "afició / hobby", exDe: "Mein Hobby ist Fotografieren.", exCa: "La meva afició és fer fotografies." },
-
-      // ==================== KAPITEL 3: In der Stadt ====================
-      { id: "k3_01", kapitel: "K3", block: "k1-3", type: "noun", article: "der", word: "Bahnhof", pluralSuffix: "¨-e", pluralFull: "die Bahnhöfe", forms: "der Bahnhof, ¨-e", ca: "estació de tren", exDe: "Entschuldigung, wo ist der Bahnhof?", exCa: "Disculpi, on és l'estació de tren?" },
-      { id: "k3_02", kapitel: "K3", block: "k1-3", type: "noun", article: "der", word: "Zug", pluralSuffix: "¨-e", pluralFull: "die Züge", forms: "der Zug, ¨-e", ca: "tren", exDe: "Der Zug fährt pünktlich um acht Uhr.", exCa: "El tren surt puntual a les vuit." },
-      { id: "k3_03", kapitel: "K3", block: "k1-3", type: "noun", article: "das", word: "Auto", pluralSuffix: "-s", pluralFull: "die Autos", forms: "das Auto, -s", ca: "cotxe", exDe: "Wir fahren mit dem Auto in die Stadt.", exCa: "Anem amb el cotxe a la ciutat." },
-      { id: "k3_04", kapitel: "K3", block: "k1-3", type: "noun", article: "das", word: "Fahrrad", pluralSuffix: "¨-er", pluralFull: "die Fahrräder", forms: "das Fahrrad, ¨-er", ca: "bicicleta", exDe: "Ich fahre jeden Tag mit dem Fahrrad.", exCa: "Vaig cada dia amb la bicicleta." },
-      { id: "k3_05", kapitel: "K3", block: "k1-3", type: "noun", article: "die", word: "Straße", pluralSuffix: "-n", pluralFull: "die Straßen", forms: "die Straße, -n", ca: "carrer", exDe: "In welcher Straße ist das Hotel?", exCa: "En quin carrer és l'hotel?" },
-      { id: "k3_06", kapitel: "K3", block: "k1-3", type: "noun", article: "das", word: "Hotel", pluralSuffix: "-s", pluralFull: "die Hotels", forms: "das Hotel, -s", ca: "hotel", exDe: "Das Hotel liegt direkt am Bahnhof.", exCa: "L'hotel està just a l'estació." },
-      { id: "k3_07", kapitel: "K3", block: "k1-3", type: "noun", article: "das", word: "Museum", pluralSuffix: "-Museen", pluralFull: "die Museen", forms: "das Museum, Museen", ca: "museu", exDe: "Das Museum ist am Montag geschlossen.", exCa: "El museu està tancat dilluns." },
-      { id: "k3_08", kapitel: "K3", block: "k1-3", type: "noun", article: "der", word: "Platz", pluralSuffix: "¨-e", pluralFull: "die Plätze", forms: "der Platz, ¨-e", ca: "plaça / lloc", exDe: "Auf dem Platz gibt es ein Café.", exCa: "A la plaça hi ha una cafeteria." },
-      { id: "k3_09", kapitel: "K3", block: "k1-3", type: "verb", word: "fahren", forms: "fährt · ist gefahren", ca: "anar (en vehicle) / conduir", exDe: "Er fährt mit der U-Bahn zur Arbeit.", exCa: "Ell va amb metro a la feina." },
-      { id: "k3_10", kapitel: "K3", block: "k1-3", type: "other", word: "links / rechts", forms: "Adverbi de direcció", ca: "a l'esquerra / a la dreta", exDe: "Gehen Sie zuerst links und dann rechts.", exCa: "Vagi primer a l'esquerra i després a la dreta." },
-      { id: "k3_11", kapitel: "K3", block: "k1-3", type: "noun", article: "der", word: "Bus", pluralSuffix: "-se", pluralFull: "die Busse", forms: "der Bus, -se", ca: "autobús", exDe: "Der Bus kommt in fünf Minuten.", exCa: "L'autobús arriba d'aquí a cinc minuts." },
-      { id: "k3_12", kapitel: "K3", block: "k1-3", type: "noun", article: "die", word: "Kirche", pluralSuffix: "-n", pluralFull: "die Kirchen", forms: "die Kirche, -n", ca: "església", exDe: "Die alte Kirche ist im Zentrum.", exCa: "L'església antiga és al centre." },
-
-      // ==================== KAPITEL 4: Guten Appetit! ====================
-      { id: "k4_01", kapitel: "K4", block: "k4-6", type: "noun", article: "der", word: "Apfel", pluralSuffix: "¨-", pluralFull: "die Äpfel", forms: "der Apfel, ¨-", ca: "poma", exDe: "Ich möchte bitte vier Äpfel kaufen.", exCa: "Voldria comprar quatre pomes, si us plau." },
-      { id: "k4_02", kapitel: "K4", block: "k4-6", type: "noun", article: "das", word: "Brot", pluralSuffix: "-e", pluralFull: "die Brote", forms: "das Brot, -e", ca: "pa", exDe: "Zum Frühstück esse ich Brot mit Käse.", exCa: "Per esmorzar menjo pa amb formatge." },
-      { id: "k4_03", kapitel: "K4", block: "k4-6", type: "noun", article: "das", word: "Brötchen", pluralSuffix: "-", pluralFull: "die Brötchen", forms: "das Brötchen, -", ca: "panet", exDe: "Am Sonntag holen wir frische Brötchen.", exCa: "El diumenge anem a buscar panets tendres." },
-      { id: "k4_04", kapitel: "K4", block: "k4-6", type: "noun", article: "das", word: "Ei", pluralSuffix: "-er", pluralFull: "die Eier", forms: "das Ei, -er", ca: "ou", exDe: "Wir brauchen noch sechs Eier.", exCa: "Encara necessitem sis ous." },
-      { id: "k4_05", kapitel: "K4", block: "k4-6", type: "noun", article: "die", word: "Kartoffel", pluralSuffix: "-n", pluralFull: "die Kartoffeln", forms: "die Kartoffel, -n", ca: "patata", exDe: "Isst du gern Fisch mit Kartoffeln?", exCa: "T'agrada menjar peix amb patates?" },
-      { id: "k4_06", kapitel: "K4", block: "k4-6", type: "noun", article: "die", word: "Tomate", pluralSuffix: "-n", pluralFull: "die Tomaten", forms: "die Tomate, -n", ca: "tomàquet", exDe: "Die Tomaten aus dem Garten sind lecker.", exCa: "Els tomàquets de l'hort són boníssims." },
-      { id: "k4_07", kapitel: "K4", block: "k4-6", type: "noun", article: "der", word: "Käse", pluralSuffix: "kein Pl.", pluralFull: "només singular", forms: "der Käse (Sg.)", ca: "formatge", exDe: "Magst du Käse auf der Pizza?", exCa: "T'agrada el formatge a la pizza?" },
-      { id: "k4_08", kapitel: "K4", block: "k4-6", type: "noun", article: "die", word: "Milch", pluralSuffix: "kein Pl.", pluralFull: "només singular", forms: "die Milch (Sg.)", ca: "llet", exDe: "Trinkst du deinen Kaffee mit Milch?", exCa: "Prens el teu cafè amb llet?" },
-      { id: "k4_09", kapitel: "K4", block: "k4-6", type: "noun", article: "die", word: "Flasche", pluralSuffix: "-n", pluralFull: "die Flaschen", forms: "die Flasche, -n", ca: "ampolla", exDe: "Eine Flasche Mineralwasser, bitte.", exCa: "Una ampolla d'aigua mineral, si us plau." },
-      { id: "k4_10", kapitel: "K4", block: "k4-6", type: "verb", word: "essen", forms: "isst · hat gegessen", ca: "menjar", exDe: "Was isst du gern zu Mittag?", exCa: "Què t'agrada menjar al migdia?" },
-      { id: "k4_11", kapitel: "K4", block: "k4-6", type: "verb", word: "trinken", forms: "trinkt · hat getrunken", ca: "beure", exDe: "Ich trinke morgens immer einen Tee.", exCa: "Als matins sempre bec un te." },
-      { id: "k4_12", kapitel: "K4", block: "k4-6", type: "verb", word: "kaufen", forms: "kauft · hat gekauft", ca: "comprar", exDe: "Wir kaufen Obst auf dem Markt.", exCa: "Comprem fruita al mercat." },
-      { id: "k4_13", kapitel: "K4", block: "k4-6", type: "noun", article: "die", word: "Banane", pluralSuffix: "-n", pluralFull: "die Bananen", forms: "die Banane, -n", ca: "plàtan", exDe: "Ich esse eine Banane zum Frühstück.", exCa: "Menjo un plàtan per esmorzar." },
-      { id: "k4_14", kapitel: "K4", block: "k4-6", type: "noun", article: "der", word: "Fisch", pluralSuffix: "-e", pluralFull: "die Fische", forms: "der Fisch, -e", ca: "peix", exDe: "Der Fisch ist ganz frisch.", exCa: "El peix és molt fresc." },
-
-      // ==================== KAPITEL 5: Alltag und Familie ====================
-      { id: "k5_01", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Uhr", pluralSuffix: "-en", pluralFull: "die Uhren", forms: "die Uhr, -en", ca: "rellotge / hora", exDe: "Wie viel Uhr ist es jetzt?", exCa: "Quina hora és ara?" },
-      { id: "k5_02", kapitel: "K5", block: "k4-6", type: "noun", article: "der", word: "Tag", pluralSuffix: "-e", pluralFull: "die Tage", forms: "der Tag, -e", ca: "dia", exDe: "Jeden Tag lerne ich zwanzig Minuten Deutsch.", exCa: "Cada dia aprenc vint minuts d'alemany." },
-      { id: "k5_03", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Woche", pluralSuffix: "-n", pluralFull: "die Wochen", forms: "die Woche, -n", ca: "setmana", exDe: "Die Woche hat sieben Tage.", exCa: "La setmana té set dies." },
-      { id: "k5_04", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Familie", pluralSuffix: "-n", pluralFull: "die Familien", forms: "die Familie, -n", ca: "família", exDe: "Meine Familie wohnt in Tarragona.", exCa: "La meva família viu a Tarragona." },
-      { id: "k5_05", kapitel: "K5", block: "k4-6", type: "noun", article: "der", word: "Vater", pluralSuffix: "¨-", pluralFull: "die Väter", forms: "der Vater, ¨-", ca: "pare", exDe: "Mein Vater kocht am Sonntag sehr gern.", exCa: "Al meu pare li agrada molt cuinar diumenge." },
-      { id: "k5_06", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Mutter", pluralSuffix: "¨-", pluralFull: "die Mütter", forms: "die Mutter, ¨-", ca: "mare", exDe: "Meine Mutter spricht drei Sprachen.", exCa: "La meva mare parla tres idiomes." },
-      { id: "k5_07", kapitel: "K5", block: "k4-6", type: "noun", article: "das", word: "Kind", pluralSuffix: "-er", pluralFull: "die Kinder", forms: "das Kind, -er", ca: "nen / nena / fill", exDe: "Die Kinder spielen im Garten.", exCa: "Els nens juguen al jardí." },
-      { id: "k5_08", kapitel: "K5", block: "k4-6", type: "noun", article: "der", word: "Bruder", pluralSuffix: "¨-", pluralFull: "die Brüder", forms: "der Bruder, ¨-", ca: "germà", exDe: "Hast du einen Bruder oder eine Schwester?", exCa: "Tens un germà o una germana?" },
-      { id: "k5_09", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Schwester", pluralSuffix: "-n", pluralFull: "die Schwestern", forms: "die Schwester, -n", ca: "germana", exDe: "Meine Schwester studiert Medizin.", exCa: "La meva germana estudia medicina." },
-      { id: "k5_10", kapitel: "K5", block: "k4-6", type: "verb", word: "schlafen", forms: "schläft · hat geschlafen", ca: "dormir", exDe: "Am Sonntag schläft er immer lange.", exCa: "Els diumenges ell sempre dorm fins tard." },
-      { id: "k5_11", kapitel: "K5", block: "k4-6", type: "verb", word: "aufstehen", forms: "steht auf · ist aufgestanden", ca: "llevar-se", exDe: "Ich stehe jeden Morgen um sieben Uhr auf.", exCa: "Em llevo cada matí a les set." },
-      { id: "k5_12", kapitel: "K5", block: "k4-6", type: "noun", article: "der", word: "Sohn", pluralSuffix: "¨-e", pluralFull: "die Söhne", forms: "der Sohn, ¨-e", ca: "fill", exDe: "Unser Sohn geht schon in die Schule.", exCa: "El nostre fill ja va a l'escola." },
-      { id: "k5_13", kapitel: "K5", block: "k4-6", type: "noun", article: "die", word: "Tochter", pluralSuffix: "¨-", pluralFull: "die Töchter", forms: "die Tochter, ¨-", ca: "filla", exDe: "Ihre Tochter spielt sehr gut Klavier.", exCa: "La seva filla toca molt bé el piano." },
-
-      // ==================== KAPITEL 6: Zeit mit Freunden ====================
-      { id: "k6_01", kapitel: "K6", block: "k4-6", type: "noun", article: "das", word: "Geschenk", pluralSuffix: "-e", pluralFull: "die Geschenke", forms: "das Geschenk, -e", ca: "regal", exDe: "Wir suchen ein Geschenk für Lisa.", exCa: "Busquem un regal per a la Lisa." },
-      { id: "k6_02", kapitel: "K6", block: "k4-6", type: "noun", article: "der", word: "Geburtstag", pluralSuffix: "-e", pluralFull: "die Geburtstage", forms: "der Geburtstag, -e", ca: "aniversari", exDe: "Wann hast du Geburtstag?", exCa: "Quan és el teu aniversari?" },
-      { id: "k6_03", kapitel: "K6", block: "k4-6", type: "noun", article: "die", word: "Party", pluralSuffix: "-s", pluralFull: "die Partys", forms: "die Party, -s", ca: "festa", exDe: "Kommst du am Samstag zur Party?", exCa: "Véns dissabte a la festa?" },
-      { id: "k6_04", kapitel: "K6", block: "k4-6", type: "noun", article: "das", word: "Restaurant", pluralSuffix: "-s", pluralFull: "die Restaurants", forms: "das Restaurant, -s", ca: "restaurant", exDe: "Wir treffen uns im Restaurant.", exCa: "Ens trobem al restaurant." },
-      { id: "k6_05", kapitel: "K6", block: "k4-6", type: "noun", article: "die", word: "Rechnung", pluralSuffix: "-en", pluralFull: "die Rechnungen", forms: "die Rechnung, -en", ca: "compte / factura", exDe: "Bitte, die Rechnung! Wir möchten zahlen.", exCa: "El compte, si us plau! Voldríem pagar." },
-      { id: "k6_06", kapitel: "K6", block: "k4-6", type: "noun", article: "das", word: "Glas", pluralSuffix: "¨-er", pluralFull: "die Gläser", forms: "das Glas, ¨-er", ca: "got / copa", exDe: "Bringen Sie mir bitte ein Glas Wasser?", exCa: "Em porta un got d'aigua, si us plau?" },
-      { id: "k6_07", kapitel: "K6", block: "k4-6", type: "verb", word: "einladen", forms: "lädt ein · hat eingeladen", ca: "convidar", exDe: "Ich lade dich herzlich zu meinem Fest ein.", exCa: "Et convido cordialment a la meva festa." },
-      { id: "k6_08", kapitel: "K6", block: "k4-6", type: "verb", word: "treffen", forms: "trifft · hat getroffen", ca: "trobar-se / quedar amb", exDe: "Heute Abend treffe ich meine Freunde.", exCa: "Aquest vespre quedo amb els meus amics." },
-      { id: "k6_09", kapitel: "K6", block: "k4-6", type: "verb", word: "bezahlen", forms: "bezahlt · hat bezahlt", ca: "pagar", exDe: "Kann ich hier mit Karte bezahlen?", exCa: "Puc pagar aquí amb targeta?" },
-
-      // ==================== KAPITEL 7: Arbeitsalltag ====================
-      { id: "k7_01", kapitel: "K7", block: "k7-9", type: "noun", article: "das", word: "Büro", pluralSuffix: "-s", pluralFull: "die Büros", forms: "das Büro, -s", ca: "oficina / despatx", exDe: "Heute arbeite ich den ganzen Tag im Büro.", exCa: "Avui treballo tot el dia a l'oficina." },
-      { id: "k7_02", kapitel: "K7", block: "k7-9", type: "noun", article: "der", word: "Computer", pluralSuffix: "-", pluralFull: "die Computer", forms: "der Computer, -", ca: "ordinador", exDe: "Mein Computer funktioniert heute nicht.", exCa: "El meu ordinador avui no funciona." },
-      { id: "k7_03", kapitel: "K7", block: "k7-9", type: "noun", article: "der", word: "Termin", pluralSuffix: "-e", pluralFull: "die Termine", forms: "der Termin, -e", ca: "cita / reunió", exDe: "Ich habe um zehn Uhr einen wichtigen Termin.", exCa: "Tinc una cita important a les deu." },
-      { id: "k7_04", kapitel: "K7", block: "k7-9", type: "noun", article: "der", word: "Brief", pluralSuffix: "-e", pluralFull: "die Briefe", forms: "der Brief, -e", ca: "carta (postal)", exDe: "Hast du den Brief schon geschickt?", exCa: "Ja has enviat la carta?" },
-      { id: "k7_05", kapitel: "K7", block: "k7-9", type: "noun", article: "der", word: "Kollege", pluralSuffix: "-n", pluralFull: "die Kollegen", forms: "der Kollege, -n", ca: "company de feina", exDe: "Meine Kollegen sind sehr hilfsbereit.", exCa: "Els meus companys de feina són molt servicials." },
-      { id: "k7_06", kapitel: "K7", block: "k7-9", type: "noun", article: "die", word: "Pause", pluralSuffix: "-n", pluralFull: "die Pausen", forms: "die Pause, -n", ca: "pausa / descans", exDe: "Um zwölf Uhr machen wir Mittagspause.", exCa: "A les dotze fem la pausa per dinar." },
-      { id: "k7_07", kapitel: "K7", block: "k7-9", type: "verb", word: "schreiben", forms: "schreibt · hat geschrieben", ca: "escriure", exDe: "Ich schreibe schnell eine E-Mail.", exCa: "Escric ràpidament un correu electrònic." },
-      { id: "k7_08", kapitel: "K7", block: "k7-9", type: "verb", word: "anrufen", forms: "ruft an · hat angerufen", ca: "trucar per telèfon", exDe: "Ich rufe dich später noch einmal an.", exCa: "Et torno a trucar més tard." },
-
-      // ==================== KAPITEL 8: Fit und gesund ====================
-      { id: "k8_01", kapitel: "K8", block: "k7-9", type: "noun", article: "der", word: "Kopf", pluralSuffix: "¨-e", pluralFull: "die Köpfe", forms: "der Kopf, ¨-e", ca: "cap", exDe: "Mir tut heute der Kopf weh.", exCa: "Avui em fa mal el cap." },
-      { id: "k8_02", kapitel: "K8", block: "k7-9", type: "noun", article: "das", word: "Auge", pluralSuffix: "-n", pluralFull: "die Augen", forms: "das Auge, -n", ca: "ull", exDe: "Sie hat sehr schöne grüne Augen.", exCa: "Ella té uns ulls verds molt bonics." },
-      { id: "k8_03", kapitel: "K8", block: "k7-9", type: "noun", article: "die", word: "Hand", pluralSuffix: "¨-e", pluralFull: "die Hände", forms: "die Hand, ¨-e", ca: "mà", exDe: "Bitte waschen Sie sich die Hände.", exCa: "Si us plau, renti's les mans." },
-      { id: "k8_04", kapitel: "K8", block: "k7-9", type: "noun", article: "der", word: "Fuß", pluralSuffix: "¨-e", pluralFull: "die Füße", forms: "der Fuß, ¨-e", ca: "peu", exDe: "Nach dem Wandern tun mir die Füße weh.", exCa: "Després de caminar em fan mal els peus." },
-      { id: "k8_05", kapitel: "K8", block: "k7-9", type: "noun", article: "der", word: "Bauch", pluralSuffix: "¨-e", pluralFull: "die Bäuche", forms: "der Bauch, ¨-e", ca: "panxa / ventre", exDe: "Das Kind hat Bauchschmerzen.", exCa: "El nen té mal de panxa." },
-      { id: "k8_06", kapitel: "K8", block: "k7-9", type: "noun", article: "das", word: "Bein", pluralSuffix: "-e", pluralFull: "die Beine", forms: "das Bein, -e", ca: "cama", exDe: "Er hat sich beim Fußball das Bein verletzt.", exCa: "Ell s'ha lesionat la cama jugant a futbol." },
-      { id: "k8_07", kapitel: "K8", block: "k7-9", type: "noun", article: "die", word: "Apotheke", pluralSuffix: "-n", pluralFull: "die Apotheken", forms: "die Apotheke, -n", ca: "farmàcia", exDe: "Sie bekommen die Tabletten in der Apotheke.", exCa: "Trobareu les pastilles a la farmàcia." },
-      { id: "k8_08", kapitel: "K8", block: "k7-9", type: "other", word: "krank / gesund", forms: "Adjectiu contrari", ca: "malalt / sa", exDe: "Ich bin krank und bleibe heute im Bett.", exCa: "Estic malalt i avui em quedo al llit." },
-      { id: "k8_09", kapitel: "K8", block: "k7-9", type: "noun", article: "das", word: "Ohr", pluralSuffix: "-en", pluralFull: "die Ohren", forms: "das Ohr, -en", ca: "orella", exDe: "Meine Ohren sind im Winter oft kalt.", exCa: "Les meves orelles sovint estan fredes a l'hivern." },
-
-      // ==================== KAPITEL 9: Meine Wohnung ====================
-      { id: "k9_01", kapitel: "K9", block: "k7-9", type: "noun", article: "die", word: "Wohnung", pluralSuffix: "-en", pluralFull: "die Wohnungen", forms: "die Wohnung, -en", ca: "pis / apartament", exDe: "Unsere neue Wohnung hat drei Zimmer.", exCa: "El nostre pis nou té tres habitacions." },
-      { id: "k9_02", kapitel: "K9", block: "k7-9", type: "noun", article: "das", word: "Haus", pluralSuffix: "¨-er", pluralFull: "die Häuser", forms: "das Haus, ¨-er", ca: "casa", exDe: "Das Haus hat einen großen Garten.", exCa: "La casa té un jardí gran." },
-      { id: "k9_03", kapitel: "K9", block: "k7-9", type: "noun", article: "das", word: "Zimmer", pluralSuffix: "-", pluralFull: "die Zimmer", forms: "das Zimmer, -", ca: "habitació", exDe: "Dein Zimmer ist sehr hell und ruhig.", exCa: "La teva habitació és molt lluminosa i tranquil·la." },
-      { id: "k9_04", kapitel: "K9", block: "k7-9", type: "noun", article: "die", word: "Küche", pluralSuffix: "-n", pluralFull: "die Küchen", forms: "die Küche, -n", ca: "cuina", exDe: "Wir sitzen abends oft in der Küche.", exCa: "Als vespres sovint seiem a la cuina." },
-      { id: "k9_05", kapitel: "K9", block: "k7-9", type: "noun", article: "das", word: "Bad", pluralSuffix: "¨-er", pluralFull: "die Bäder", forms: "das Bad, ¨-er", ca: "bany", exDe: "Das Bad hat eine Dusche und ein Fenster.", exCa: "El bany té una dutxa i una finestra." },
-      { id: "k9_06", kapitel: "K9", block: "k7-9", type: "noun", article: "der", word: "Tisch", pluralSuffix: "-e", pluralFull: "die Tische", forms: "der Tisch, -e", ca: "taula", exDe: "Die Bücher liegen auf dem Tisch.", exCa: "Els llibres són damunt la taula." },
-      { id: "k9_07", kapitel: "K9", block: "k7-9", type: "noun", article: "der", word: "Stuhl", pluralSuffix: "¨-e", pluralFull: "die Stühle", forms: "der Stuhl, ¨-e", ca: "cadira", exDe: "Wir brauchen noch vier Stühle für das Esszimmer.", exCa: "Necessitem quatre cadires més per al menjador." },
-      { id: "k9_08", kapitel: "K9", block: "k7-9", type: "noun", article: "der", word: "Schrank", pluralSuffix: "¨-e", pluralFull: "die Schränke", forms: "der Schrank, ¨-e", ca: "armari", exDe: "Die Jacke hängt im Schrank.", exCa: "La jaqueta està penjada a l'armari." },
-      { id: "k9_09", kapitel: "K9", block: "k7-9", type: "noun", article: "das", word: "Bett", pluralSuffix: "-en", pluralFull: "die Betten", forms: "das Bett, -en", ca: "llit", exDe: "Das neue Bett ist sehr bequem.", exCa: "El llit nou és molt còmode." },
-      { id: "k9_10", kapitel: "K9", block: "k7-9", type: "noun", article: "die", word: "Lampe", pluralSuffix: "-n", pluralFull: "die Lampen", forms: "die Lampe, -n", ca: "llum / làmpada", exDe: "Die Lampe hängt über dem Tisch.", exCa: "El llum penja sobre la taula." },
-      { id: "k9_11", kapitel: "K9", block: "k7-9", type: "noun", article: "der", word: "Schlüssel", pluralSuffix: "-", pluralFull: "die Schlüssel", forms: "der Schlüssel, -", ca: "clau", exDe: "Wo ist mein Wohnungsschlüssel?", exCa: "On és la clau del meu pis?" },
-      { id: "k9_12", kapitel: "K9", block: "k7-9", type: "noun", article: "das", word: "Sofa", pluralSuffix: "-s", pluralFull: "die Sofas", forms: "das Sofa, -s", ca: "sofà", exDe: "Das Sofa im Wohnzimmer ist neu.", exCa: "El sofà de la sala d'estar és nou." },
-
-      // ==================== KAPITEL 10: Studium und Beruf ====================
-      { id: "k10_01", kapitel: "K10", block: "k10-12", type: "noun", article: "die", word: "Universität", pluralSuffix: "-en", pluralFull: "die Universitäten", forms: "die Universität, -en", ca: "universitat", exDe: "Sie studiert an der Universität Wien.", exCa: "Ella estudia a la Universitat de Viena." },
-      { id: "k10_02", kapitel: "K10", block: "k10-12", type: "noun", article: "die", word: "Schule", pluralSuffix: "-n", pluralFull: "die Schulen", forms: "die Schule, -n", ca: "escola", exDe: "Die Schule beginnt um acht Uhr.", exCa: "L'escola comença a les vuit." },
-      { id: "k10_03", kapitel: "K10", block: "k10-12", type: "noun", article: "der", word: "Kurs", pluralSuffix: "-e", pluralFull: "die Kurse", forms: "der Kurs, -e", ca: "curs", exDe: "Der Deutschkurs macht mir viel Spaß.", exCa: "El curs d'alemany m'agrada molt." },
-      { id: "k10_04", kapitel: "K10", block: "k10-12", type: "noun", article: "die", word: "Prüfung", pluralSuffix: "-en", pluralFull: "die Prüfungen", forms: "die Prüfung, -en", ca: "examen / prova", exDe: "Nächste Woche habe ich meine A1-Prüfung.", exCa: "La setmana que ve tinc el meu examen d'A1." },
-      { id: "k10_05", kapitel: "K10", block: "k10-12", type: "noun", article: "die", word: "Frage", pluralSuffix: "-n", pluralFull: "die Fragen", forms: "die Frage, -n", ca: "pregunta", exDe: "Haben Sie noch eine Frage?", exCa: "Teniu encara alguna pregunta?" },
-      { id: "k10_06", kapitel: "K10", block: "k10-12", type: "noun", article: "die", word: "Antwort", pluralSuffix: "-en", pluralFull: "die Antworten", forms: "die Antwort, -en", ca: "resposta", exDe: "Die Antwort ist ganz einfach.", exCa: "La resposta és ben senzilla." },
-      { id: "k10_07", kapitel: "K10", block: "k10-12", type: "verb", word: "lernen", forms: "lernt · hat gelernt", ca: "aprendre / estudiar", exDe: "Wir lernen zusammen die deutschen Vokabeln.", exCa: "Aprenem junts el vocabulari alemany." },
-      { id: "k10_08", kapitel: "K10", block: "k10-12", type: "verb", word: "verstehen", forms: "versteht · hat verstanden", ca: "entendre", exDe: "Ich habe den Satz gut verstanden.", exCa: "He entès bé la frase." },
-
-      // ==================== KAPITEL 11: Die Jacke gefällt mir! ====================
-      { id: "k11_01", kapitel: "K11", block: "k10-12", type: "noun", article: "die", word: "Jacke", pluralSuffix: "-n", pluralFull: "die Jacken", forms: "die Jacke, -n", ca: "jaqueta", exDe: "Die blaue Jacke gefällt mir sehr gut.", exCa: "La jaqueta blava m'agrada molt." },
-      { id: "k11_02", kapitel: "K11", block: "k10-12", type: "noun", article: "die", word: "Hose", pluralSuffix: "-n", pluralFull: "die Hosen", forms: "die Hose, -n", ca: "pantalons", exDe: "Die Hose passt mir leider nicht.", exCa: "Els pantalons malauradament no em van bé." },
-      { id: "k11_03", kapitel: "K11", block: "k10-12", type: "noun", article: "das", word: "Hemd", pluralSuffix: "-en", pluralFull: "die Hemden", forms: "das Hemd, -en", ca: "camisa", exDe: "Er trägt heute ein weißes Hemd.", exCa: "Ell porta avui una camisa blanca." },
-      { id: "k11_04", kapitel: "K11", block: "k10-12", type: "noun", article: "der", word: "Pullover", pluralSuffix: "-", pluralFull: "die Pullover", forms: "der Pullover, -", ca: "jersei", exDe: "Der Pullover ist warm und weich.", exCa: "El jersei és càlid i suau." },
-      { id: "k11_05", kapitel: "K11", block: "k10-12", type: "noun", article: "der", word: "Schuh", pluralSuffix: "-e", pluralFull: "die Schuhe", forms: "der Schuh, -e", ca: "sabata", exDe: "Ich brauche neue Schuhe für den Winter.", exCa: "Necessito sabates noves per a l'hivern." },
-      { id: "k11_06", kapitel: "K11", block: "k10-12", type: "noun", article: "das", word: "Kleid", pluralSuffix: "-er", pluralFull: "die Kleider", forms: "das Kleid, -er", ca: "vestit (de dona)", exDe: "Das rote Kleid steht dir super!", exCa: "El vestit vermell et queda genial!" },
-      { id: "k11_07", kapitel: "K11", block: "k10-12", type: "noun", article: "die", word: "Tasche", pluralSuffix: "-n", pluralFull: "die Taschen", forms: "die Tasche, -n", ca: "bossa", exDe: "Mein Handy ist in der Tasche.", exCa: "El meu mòbil és a la bossa." },
-      { id: "k11_08", kapitel: "K11", block: "k10-12", type: "noun", article: "der", word: "Preis", pluralSuffix: "-e", pluralFull: "die Preise", forms: "der Preis, -e", ca: "preu", exDe: "Der Preis ist wirklich günstig.", exCa: "El preu és realment econòmic." },
-      { id: "k11_09", kapitel: "K11", block: "k10-12", type: "verb", word: "gefallen", forms: "gefällt · hat gefallen (+ Dat)", ca: "agradar", exDe: "Gefällt dir dieser Mantel?", exCa: "T'agrada aquest abric?" },
-      { id: "k11_10", kapitel: "K11", block: "k10-12", type: "verb", word: "tragen", forms: "trägt · hat getragen", ca: "portar (roba / pes)", exDe: "Im Sommer trage ich gern T-Shirts.", exCa: "A l'estiu m'agrada portar samarretes." },
-      { id: "k11_11", kapitel: "K11", block: "k10-12", type: "noun", article: "der", word: "Mantel", pluralSuffix: "¨-", pluralFull: "die Mäntel", forms: "der Mantel, ¨-", ca: "abric", exDe: "Im Winter brauchst du einen warmen Mantel.", exCa: "A l'hivern necessites un abric càlid." },
-
-      // ==================== KAPITEL 12: Ab in den Urlaub! ====================
-      { id: "k12_01", kapitel: "K12", block: "k10-12", type: "noun", article: "der", word: "Urlaub", pluralSuffix: "-e", pluralFull: "die Urlaube", forms: "der Urlaub, -e", ca: "vacances", exDe: "Im August machen wir Urlaub am Meer.", exCa: "A l'agost fem vacances al mar." },
-      { id: "k12_02", kapitel: "K12", block: "k10-12", type: "noun", article: "die", word: "Reise", pluralSuffix: "-n", pluralFull: "die Reisen", forms: "die Reise, -n", ca: "viatge", exDe: "Gute Reise und viel Spaß!", exCa: "Bon viatge i que t'ho passis molt bé!" },
-      { id: "k12_03", kapitel: "K12", block: "k10-12", type: "noun", article: "der", word: "Koffer", pluralSuffix: "-", pluralFull: "die Koffer", forms: "der Koffer, -", ca: "maleta", exDe: "Ich muss heute Abend meinen Koffer packen.", exCa: "Aquest vespre he d'empacar la meva maleta." },
-      { id: "k12_04", kapitel: "K12", block: "k10-12", type: "noun", article: "der", word: "Flughafen", pluralSuffix: "¨-", pluralFull: "die Flughäfen", forms: "der Flughafen, ¨-", ca: "aeroport", exDe: "Wir fahren mit dem Bus zum Flughafen.", exCa: "Anem amb l'autobús a l'aeroport." },
-      { id: "k12_05", kapitel: "K12", block: "k10-12", type: "noun", article: "das", word: "Flugzeug", pluralSuffix: "-e", pluralFull: "die Flugzeuge", forms: "das Flugzeug, -e", ca: "avió", exDe: "Das Flugzeug landet in zehn Minuten.", exCa: "L'avió aterra d'aquí a deu minuts." },
-      { id: "k12_06", kapitel: "K12", block: "k10-12", type: "noun", article: "das", word: "Meer", pluralSuffix: "-e", pluralFull: "die Meere", forms: "das Meer, -e", ca: "mar", exDe: "Wir schwimmen jeden Tag im Meer.", exCa: "Nedem cada dia al mar." },
-      { id: "k12_07", kapitel: "K12", block: "k10-12", type: "noun", article: "der", word: "Berg", pluralSuffix: "-e", pluralFull: "die Berge", forms: "der Berg, -e", ca: "muntanya", exDe: "Im Winter fahren wir in die Berge.", exCa: "A l'hivern anem a les muntanyes." },
-      { id: "k12_08", kapitel: "K12", block: "k10-12", type: "noun", article: "das", word: "Wetter", pluralSuffix: "kein Pl.", pluralFull: "només singular", forms: "das Wetter (Sg.)", ca: "temps (meteorològic)", exDe: "Wie ist das Wetter heute bei euch?", exCa: "Quin temps fa avui per allà?" },
-      { id: "k12_09", kapitel: "K12", block: "k10-12", type: "noun", article: "die", word: "Sonne", pluralSuffix: "-n", pluralFull: "die Sonnen", forms: "die Sonne, -n", ca: "sol", exDe: "Heute scheint die Sonne den ganzen Tag.", exCa: "Avui brilla el sol tot el dia." },
-      { id: "k12_10", kapitel: "K12", block: "k10-12", type: "noun", article: "der", word: "Strand", pluralSuffix: "¨-e", pluralFull: "die Strände", forms: "der Strand, ¨-e", ca: "platja", exDe: "Im Sommer liegen wir gern am Strand.", exCa: "A l'estiu ens agrada estirar-nos a la platja." },
-
-      // ==================== TOP FREQÜÈNCIA ALEMANY (750-1000 CORE) ====================
-      { id: "fr_01", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Zeit", pluralSuffix: "-en", pluralFull: "die Zeiten", forms: "die Zeit, -en", ca: "temps (cronològic)", exDe: "Ich habe heute leider keine Zeit.", exCa: "Avui malauradament no tinc temps." },
-      { id: "fr_02", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Jahr", pluralSuffix: "-e", pluralFull: "die Jahre", forms: "das Jahr, -e", ca: "any", exDe: "Ein Jahr hat zwölf Monate.", exCa: "Un any té dotze mesos." },
-      { id: "fr_03", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Monat", pluralSuffix: "-e", pluralFull: "die Monate", forms: "der Monat, -e", ca: "mes", exDe: "Nächsten Monat fahre ich nach Berlin.", exCa: "El mes que ve vaig a Berlín." },
-      { id: "fr_04", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Mensch", pluralSuffix: "-en", pluralFull: "die Menschen", forms: "der Mensch, -en", ca: "ésser humà / persona", exDe: "Viele Menschen lernen gern Fremdsprachen.", exCa: "A molta gent li agrada aprendre llengües estrangeres." },
-      { id: "fr_05", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Mann", pluralSuffix: "¨-er", pluralFull: "die Männer", forms: "der Mann, ¨-er", ca: "home / marit", exDe: "Der Mann dort heißt Herr Schneider.", exCa: "L'home d'allà es diu senyor Schneider." },
-      { id: "fr_06", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Frau", pluralSuffix: "-en", pluralFull: "die Frauen", forms: "die Frau, -en", ca: "dona / senyora", exDe: "Guten Tag, Frau Müller!", exCa: "Bon dia, senyora Müller!" },
-      { id: "fr_07", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Wort", pluralSuffix: "¨-er", pluralFull: "die Wörter", forms: "das Wort, ¨-er", ca: "paraula (de vocabulari)", exDe: "Wie heißt dieses Wort auf Deutsch?", exCa: "Com es diu aquesta paraula en alemany?" },
-      { id: "fr_08", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Beispiel", pluralSuffix: "-e", pluralFull: "die Beispiele", forms: "das Beispiel, -e", ca: "exemple", exDe: "Kannst du mir ein Beispiel sagen?", exCa: "Em pots dir un exemple?" },
-      { id: "fr_09", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Geld", pluralSuffix: "kein Pl.", pluralFull: "només singular", forms: "das Geld (Sg.)", ca: "diners", exDe: "Hast du genug Bargeld dabei?", exCa: "Portes prou diners en efectiu a sobre?" },
-      { id: "fr_10", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Wasser", pluralSuffix: "kein Pl.", pluralFull: "només singular", forms: "das Wasser (Sg.)", ca: "aigua", exDe: "Ich trinke viel Wasser beim Sport.", exCa: "Bec molta aigua fent esport." },
-      { id: "fr_11", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Bild", pluralSuffix: "-er", pluralFull: "die Bilder", forms: "das Bild, -er", ca: "imatge / quadre / foto", exDe: "Das Bild an der Wand ist sehr schön.", exCa: "El quadre de la paret és molt bonic." },
-      { id: "fr_12", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Film", pluralSuffix: "-e", pluralFull: "die Filme", forms: "der Film, -e", ca: "pel·lícula", exDe: "Der Film beginnt um zwanzig Uhr.", exCa: "La pel·lícula comença a les vuit del vespre." },
-      { id: "fr_13", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Tür", pluralSuffix: "-en", pluralFull: "die Türen", forms: "die Tür, -en", ca: "porta", exDe: "Mach bitte die Tür zu!", exCa: "Tanca la porta, si us plau!" },
-      { id: "fr_14", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Fenster", pluralSuffix: "-", pluralFull: "die Fenster", forms: "das Fenster, -", ca: "finestra", exDe: "Darf ich bitte das Fenster öffnen?", exCa: "Puc obrir la finestra, si us plau?" },
-      { id: "fr_15", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Hund", pluralSuffix: "-e", pluralFull: "die Hunde", forms: "der Hund, -e", ca: "gos", exDe: "Unser Hund spielt gern im Park.", exCa: "Al nostre gos li agrada jugar al parc." },
-      { id: "fr_16", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Katze", pluralSuffix: "-n", pluralFull: "die Katzen", forms: "die Katze, -n", ca: "gat / gata", exDe: "Die Katze schläft auf dem Sofa.", exCa: "El gat dorm al sofà." },
-      { id: "fr_17", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Baum", pluralSuffix: "¨-e", pluralFull: "die Bäume", forms: "der Baum, ¨-e", ca: "arbre", exDe: "Im Park stehen viele alte Bäume.", exCa: "Al parc hi ha molts arbres vells." },
-      { id: "fr_18", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Nacht", pluralSuffix: "¨-e", pluralFull: "die Nächte", forms: "die Nacht, ¨-e", ca: "nit", exDe: "Gute Nacht und schlaf gut!", exCa: "Bona nit i dorm bé!" },
-      { id: "fr_19", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Morgen", pluralSuffix: "-", pluralFull: "die Morgen", forms: "der Morgen, -", ca: "matí", exDe: "Guten Morgen! Möchtest du einen Kaffee?", exCa: "Bon dia! Vols un cafè?" },
-      { id: "fr_20", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Abend", pluralSuffix: "-e", pluralFull: "die Abende", forms: "der Abend, -e", ca: "vespre", exDe: "Was machst du heute Abend?", exCa: "Què fas aquest vespre?" },
-      { id: "fr_21", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Weg", pluralSuffix: "-e", pluralFull: "die Wege", forms: "der Weg, -e", ca: "camí", exDe: "Können Sie mir bitte den Weg zeigen?", exCa: "Em pot indicar el camí, si us plau?" },
-      { id: "fr_22", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Handy", pluralSuffix: "-s", pluralFull: "die Handys", forms: "das Handy, -s", ca: "telèfon mòbil", exDe: "Mein Handy hat keinen Akku mehr.", exCa: "El meu mòbil ja no té bateria." },
-      { id: "fr_23", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Ticket", pluralSuffix: "-s", pluralFull: "die Tickets", forms: "das Ticket, -s", ca: "bitllet / entrada", exDe: "Ich kaufe das Ticket online.", exCa: "Compro el bitllet per internet." },
-      { id: "fr_24", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Garten", pluralSuffix: "¨-", pluralFull: "die Gärten", forms: "der Garten, ¨-", ca: "jardí", exDe: "Im Sommer grillen wir im Garten.", exCa: "A l'estiu fem barbacoa al jardí." },
-      { id: "fr_25", kapitel: "Top", block: "freq", type: "noun", article: "das", word: "Krankenhaus", pluralSuffix: "¨-er", pluralFull: "die Krankenhäuser", forms: "das Krankenhaus, ¨-er", ca: "hospital", exDe: "Sie arbeitet als Ärztin im Krankenhaus.", exCa: "Ella treballa de metgessa a l'hospital." },
-      { id: "fr_26", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Bäckerei", pluralSuffix: "-en", pluralFull: "die Bäckereien", forms: "die Bäckerei, -en", ca: "forn de pa / fleca", exDe: "In der Bäckerei riecht es wunderbar.", exCa: "Al forn de pa hi fa una olor meravellosa." },
-      { id: "fr_27", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Supermarkt", pluralSuffix: "¨-e", pluralFull: "die Supermärkte", forms: "der Supermarkt, ¨-e", ca: "supermercat", exDe: "Der Supermarkt ist bis 20 Uhr geöffnet.", exCa: "El supermercat està obert fins a les 20 h." },
-      { id: "fr_28", kapitel: "Top", block: "freq", type: "verb", word: "können", forms: "kann · hat gekonnt", ca: "poder / saber fer", exDe: "Kannst du mir bitte kurz helfen?", exCa: "Em pots ajudar un moment, si us plau?" },
-      { id: "fr_29", kapitel: "Top", block: "freq", type: "verb", word: "müssen", forms: "muss · hat gemusst", ca: "haver de (obligació)", exDe: "Ich muss heute früh nach Hause gehen.", exCa: "Avui he d'anar d'hora cap a casa." },
-      { id: "fr_30", kapitel: "Top", block: "freq", type: "verb", word: "wollen", forms: "will · hat gewollt", ca: "voler", exDe: "Wir wollen nächstes Jahr nach Wien reisen.", exCa: "Volem viatjar a Viena l'any que ve." },
-      { id: "fr_31", kapitel: "Top", block: "freq", type: "verb", word: "möchten", forms: "möchte (Subj. de mögen)", ca: "voldria (cortesia)", exDe: "Ich möchte bitte einen Kaffee bestellen.", exCa: "Voldria demanar un cafè, si us plau." },
-      { id: "fr_32", kapitel: "Top", block: "freq", type: "verb", word: "sehen", forms: "sieht · hat gesehen", ca: "veure", exDe: "Siehst du das Schild dort drüben?", exCa: "Veus el rètol d'allà?" },
-      { id: "fr_33", kapitel: "Top", block: "freq", type: "verb", word: "geben", forms: "gibt · hat gegeben", ca: "donar (es gibt = hi ha)", exDe: "Hier gibt es viele nette Cafés.", exCa: "Aquí hi ha moltes cafeteries agradables." },
-      { id: "fr_34", kapitel: "Top", block: "freq", type: "verb", word: "nehmen", forms: "nimmt · hat genommen", ca: "agafar / prendre", exDe: "Ich nehme den Salat und eine Suppe.", exCa: "Prendré l'amanida i una sopa." },
-      { id: "fr_35", kapitel: "Top", block: "freq", type: "verb", word: "helfen", forms: "hilft · hat geholfen (+ Dat)", ca: "ajudar", exDe: "Vielen Dank, Sie haben mir sehr geholfen!", exCa: "Moltes gràcies, m'ha ajudat molt!" },
-      { id: "fr_36", kapitel: "Top", block: "freq", type: "verb", word: "finden", forms: "findet · hat gefunden", ca: "trobar / semblar", exDe: "Wie findest du meine neue Wohnung?", exCa: "Què et sembla el meu pis nou?" },
-      { id: "fr_37", kapitel: "Top", block: "freq", type: "verb", word: "wissen", forms: "weiß · hat gewusst", ca: "saber (informació)", exDe: "Ich weiß leider nicht, wo er wohnt.", exCa: "Malauradament no sé on viu ell." },
-      { id: "fr_38", kapitel: "Top", block: "freq", type: "other", word: "immer / nie", forms: "Adverbis de freqüència", ca: "sempre / mai", exDe: "Er kommt immer pünktlich, fast nie zu spät.", exCa: "Ell sempre arriba puntual, gairebé mai tard." },
-      { id: "fr_39", kapitel: "Top", block: "freq", type: "other", word: "oft / manchmal", forms: "Adverbis de freqüència", ca: "sovint / a vegades", exDe: "Ich gehe oft schwimmen, manchmal auch laufen.", exCa: "Vaig sovint a nedar, a vegades també a córrer." },
-      { id: "fr_40", kapitel: "Top", block: "freq", type: "other", word: "schnell / langsam", forms: "Adjectius contraris", ca: "ràpid / lent", exDe: "Bitte sprechen Sie etwas langsamer!", exCa: "Si us plau, parli una mica més a poc a poc!" },
-      { id: "fr_41", kapitel: "Top", block: "freq", type: "other", word: "groß / klein", forms: "Adjectius contraris", ca: "gran / petit", exDe: "Die Küche ist klein, aber das Wohnzimmer ist groß.", exCa: "La cuina és petita, però la sala d'estar és gran." },
-      { id: "fr_42", kapitel: "Top", block: "freq", type: "other", word: "neu / alt", forms: "Adjectius contraris", ca: "nou / vell (antic)", exDe: "Ist dein Fahrrad neu oder alt?", exCa: "La teva bicicleta és nova o vella?" },
-      { id: "fr_43", kapitel: "Top", block: "freq", type: "other", word: "teuer / günstig", forms: "Adjectius contraris", ca: "car / econòmic (barat)", exDe: "Das Ticket ist heute besonders günstig.", exCa: "El bitllet avui és especialment econòmic." },
-      { id: "fr_44", kapitel: "Top", block: "freq", type: "other", word: "schön / hässlich", forms: "Adjectius contraris", ca: "bonic / lleig", exDe: "Wir wünschen Ihnen einen schönen Tag!", exCa: "Us desitgem un bon dia!" },
-      { id: "fr_45", kapitel: "Top", block: "freq", type: "other", word: "leicht / schwer", forms: "Adjectius contraris", ca: "fàcil (lleuger) / difícil (pesat)", exDe: "Der Koffer ist viel zu schwer.", exCa: "La maleta és massa pesada." },
-      { id: "fr_46", kapitel: "Top", block: "freq", type: "other", word: "heute / morgen / gestern", forms: "Adverbis temporals", ca: "avui / demà / ahir", exDe: "Gestern war Sonntag, heute ist Montag.", exCa: "Ahir era diumenge, avui és dilluns." },
-      { id: "fr_47", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Kaffee", pluralSuffix: "-s", pluralFull: "die Kaffees", forms: "der Kaffee, -s", ca: "cafè", exDe: "Möchtest du noch eine Tasse Kaffee?", exCa: "Vols una altra tassa de cafè?" },
-      { id: "fr_48", kapitel: "Top", block: "freq", type: "noun", article: "die", word: "Tasse", pluralSuffix: "-n", pluralFull: "die Tassen", forms: "die Tasse, -n", ca: "tassa", exDe: "Die Tassen stehen oben im Schrank.", exCa: "Les tasses són a dalt a l'armari." },
-      { id: "fr_49", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Teller", pluralSuffix: "-", pluralFull: "die Teller", forms: "der Teller, -", ca: "plat", exDe: "Stell bitte die Teller auf den Tisch.", exCa: "Posa els plats a la taula, si us plau." },
-      { id: "fr_50", kapitel: "Top", block: "freq", type: "noun", article: "der", word: "Löffel", pluralSuffix: "-", pluralFull: "die Löffel", forms: "der Löffel, -", ca: "cullera", exDe: "Ich brauche einen Löffel für die Suppe.", exCa: "Necessito una cullera per a la sopa." }
-    ];
-
-    /**
-     * Comprovació de `window.VOCAB_DATA` procedent de `vocab.js`.
-     * S'aplica `cleanCatalan` a totes les entrades perquè cap substantiu porti article en català.
-     */
-    const hasExternalVocab = Array.isArray(window.VOCAB_DATA) && window.VOCAB_DATA.length > 0;
-    const RAW_VOCAB = hasExternalVocab ? window.VOCAB_DATA : FALLBACK_VOCAB;
-    const MASTER_VOCAB = RAW_VOCAB.map(item => ({
-      ...item,
-      ca: cleanCatalan(item.ca)
-    }));
-
-    // Clau d'emmagatzematge localStorage (v2 amb DE ➔ CA per defecte)
-    const STORAGE_KEY = "deutsch_a1_netzwerk_state_v2";
-
-    // Estat de l'aplicació (DE ➔ CA és ara el mode inicial per defecte)
-    const state = {
-      mode: "de-ca",             // 'de-ca' (per defecte) | 'ca-de' | 'noun-quiz'
-      filterKapitel: "all",      // 'all' | 'k1-3' | 'k4-6' | 'k7-9' | 'k10-12' | 'freq'
-      filterCategory: "all",     // 'all' | 'noun' | 'verb' | 'other'
-      filterStatus: "all",       // 'all' | 'pending' | 'learned'
-      learnedIds: {},            // { [id]: true }
-      reviewIds: {},             // { [id]: true }
-      deck: [],                  // Llista filtrada actual
-      currentIndex: 0,
-      isFlipped: false,
-      theme: "dark"
-    };
-
-    // Referències als elements del DOM
-    const dom = {
-      deckSourceBadge: document.getElementById("deckSourceBadge"),
-      settingsVocabStatusBadge: document.getElementById("settingsVocabStatusBadge"),
-      headerSubStats: document.getElementById("headerSubStats"),
-      currentCardCounter: document.getElementById("currentCardCounter"),
-      activeFilterSummary: document.getElementById("activeFilterSummary"),
-      activeFilterDot: document.getElementById("activeFilterDot"),
-      statLearnedCount: document.getElementById("statLearnedCount"),
-      statReviewCount: document.getElementById("statReviewCount"),
-      progressBarLearned: document.getElementById("progressBarLearned"),
-      progressBarReview: document.getElementById("progressBarReview"),
-
-      emptyDeckState: document.getElementById("emptyDeckState"),
-      cardViewport: document.getElementById("cardViewport"),
-      flashcardElement: document.getElementById("flashcardElement"),
-      stampRightFront: document.getElementById("stampRightFront"),
-      stampLeftFront: document.getElementById("stampLeftFront"),
-
-      // Cara frontal
-      frontKapitelBadge: document.getElementById("frontKapitelBadge"),
-      frontCategoryBadge: document.getElementById("frontCategoryBadge"),
-      frontStatusBadge: document.getElementById("frontStatusBadge"),
-      frontDirectionHint: document.getElementById("frontDirectionHint"),
-      frontMainWord: document.getElementById("frontMainWord"),
-      frontSubHint: document.getElementById("frontSubHint"),
-      frontArticleQuizPills: document.getElementById("frontArticleQuizPills"),
-      btnSpeakFront: document.getElementById("btnSpeakFront"),
-
-      // Cara posterior
-      backKapitelBadge: document.getElementById("backKapitelBadge"),
-      backArticleLegend: document.getElementById("backArticleLegend"),
-      backGermanDisplay: document.getElementById("backGermanDisplay"),
-      backCatalanMeaning: document.getElementById("backCatalanMeaning"),
-      backExampleDe: document.getElementById("backExampleDe"),
-      backExampleCa: document.getElementById("backExampleCa"),
-      btnSpeakBackWord: document.getElementById("btnSpeakBackWord"),
-      btnSpeakExample: document.getElementById("btnSpeakExample"),
-
-      // Modals
-      modalFilters: document.getElementById("modalFilters"),
-      modalDictionary: document.getElementById("modalDictionary"),
-      modalSettings: document.getElementById("modalSettings"),
-      dictSearchInput: document.getElementById("dictSearchInput"),
-      dictionaryListContainer: document.getElementById("dictionaryListContainer"),
-      dictTotalCountLabel: document.getElementById("dictTotalCountLabel"),
-      resetConfirmationBox: document.getElementById("resetConfirmationBox")
-    };
-
-    /**
-     * Càrrega i desat d'estat a localStorage
-     */
-    function loadSavedState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (parsed.mode) state.mode = parsed.mode;
-        if (parsed.filterKapitel) state.filterKapitel = parsed.filterKapitel;
-        if (parsed.filterCategory) state.filterCategory = parsed.filterCategory;
-        if (parsed.filterStatus) state.filterStatus = parsed.filterStatus;
-        if (parsed.learnedIds) state.learnedIds = parsed.learnedIds;
-        if (parsed.reviewIds) state.reviewIds = parsed.reviewIds;
-        if (parsed.theme) state.theme = parsed.theme;
-      } catch (err) {
-        console.warn("No s'ha pogut llegir localStorage:", err);
-      }
-    }
-
-    function saveState() {
-      try {
-        const payload = {
-          mode: state.mode,
-          filterKapitel: state.filterKapitel,
-          filterCategory: state.filterCategory,
-          filterStatus: state.filterStatus,
-          learnedIds: state.learnedIds,
-          reviewIds: state.reviewIds,
-          theme: state.theme
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      } catch (err) {
-        console.warn("No s'ha pogut desar a localStorage:", err);
-      }
-    }
-
-    /**
-     * Aplicació del tema Fosc / Clar
-     */
-    function applyTheme() {
-      const htmlEl = document.documentElement;
-      if (state.theme === "dark") {
-        htmlEl.classList.add("dark");
-      } else {
-        htmlEl.classList.remove("dark");
-      }
-    }
-
-    /**
-     * Utilitat de color segons l'article alemany (DaF: der=blau, die=vermell, das=verd)
-     */
-    function getArticleStyle(article) {
-      if (article === "der") {
-        return {
-          badgeClass: "daf-der",
-          textClass: "text-blue-600 dark:text-blue-400",
-          label: "Masculí (der)"
-        };
-      }
-      if (article === "die") {
-        return {
-          badgeClass: "daf-die",
-          textClass: "text-rose-600 dark:text-rose-400",
-          label: "Femení (die)"
-        };
-      }
-      if (article === "das") {
-        return {
-          badgeClass: "daf-das",
-          textClass: "text-emerald-600 dark:text-emerald-400",
-          label: "Neutre (das)"
-        };
-      }
-      return {
-        badgeClass: "bg-slate-200 dark:bg-slate-800 text-slate-600",
-        textClass: "text-slate-700 dark:text-slate-200",
-        label: ""
-      };
-    }
-
-    /**
-     * Pronunciació amb Web Speech API (de-DE)
-     */
-    function speakGerman(textToSpeak, event) {
-      if (event) {
-        event.stopPropagation();
-      }
-      if (!("speechSynthesis" in window)) return;
-
-      try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
-        utterance.lang = "de-DE";
-        utterance.rate = 0.92;
-
-        const voices = window.speechSynthesis.getVoices();
-        const germanVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("de"));
-        if (germanVoice) {
-          utterance.voice = germanVoice;
-        }
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        console.warn("Error de síntesi de veu:", e);
-      }
-    }
-
-    /**
-     * Construeix el text òptim per pronunciar una targeta (per a substantius: article + singular + plural)
-     */
-    function getCardSpokenWord(item) {
-      if (!item) return "";
-      if (item.type === "noun" && item.article) {
-        if (item.pluralFull && item.pluralFull.startsWith("die ")) {
-          return `${item.article} ${item.word}. ${item.pluralFull}`;
-        }
-        return `${item.article} ${item.word}`;
-      }
-      return item.word;
-    }
-
-    /**
-     * Filtra la baralla segons el mode d'estudi i els filtres actius
-     */
-    function rebuildDeck(keepIndex = false) {
-      const filtered = MASTER_VOCAB.filter(item => {
-        // En mode "Test Article/Plural" només mostrem Substantius
-        if (state.mode === "noun-quiz" && item.type !== "noun") {
-          return false;
+            // Neteja preventiva: treure números inicials del català per si n'hi hagués (ex: "1. Taula" -> "Taula")
+            vocab = vocab.map(item => {
+                if(item.ca) item.ca = item.ca.replace(/^\d+[\.\-\)]?\s*/, '').trim();
+                return item;
+            });
+
+            applyModeFilter();
         }
 
-        // Filtre per bloc de Kapitel
-        if (state.filterKapitel !== "all" && item.block !== state.filterKapitel) {
-          return false;
+        function applyModeFilter() {
+            currentMode = modeSelect.value;
+            let currentList = (typeof window.VOCAB_DATA !== 'undefined') ? [...window.VOCAB_DATA] : [...FALLBACK_VOCAB];
+            
+            if (currentMode === 'art-pl') {
+                vocab = currentList.filter(item => item.type === 'noun');
+            } else {
+                vocab = currentList;
+            }
+            
+            currentIndex = 0;
+            updateCard();
         }
 
-        // Filtre per categoria gramatical
-        if (state.filterCategory !== "all" && item.type !== state.filterCategory) {
-          return false;
+        function getArticleHTML(article, showHidden = false) {
+            if (!article) return '';
+            const cssClass = `art-${article}`;
+            if (showHidden) return `<span class="${cssClass} hidden-art">???</span>`;
+            return `<span class="${cssClass}">${article}</span>`;
         }
 
-        // Filtre per estat (Apreses vs Per repassar/Pendents)
-        if (state.filterStatus === "learned" && !state.learnedIds[item.id]) {
-          return false;
-        }
-        if (state.filterStatus === "pending" && state.learnedIds[item.id]) {
-          return false;
-        }
+        function updateCard() {
+            if (vocab.length === 0) return;
 
-        return true;
-      });
+            const item = vocab[currentIndex];
+            statsDisplay.innerText = `${currentIndex + 1} / ${vocab.length}`;
+            progressFill.style.width = `${((currentIndex + 1) / vocab.length) * 100}%`;
+            
+            let frontHTML = '';
+            let backHTML = '';
+            
+            let typeLabel = 'Altres';
+            if (item.type === 'noun') typeLabel = 'Substantiu';
+            if (item.type === 'verb') typeLabel = 'Verb';
+            let typeBadge = `<div class="type-badge">${typeLabel}</div>`;
 
-      state.deck = filtered;
-      if (!keepIndex || state.currentIndex >= state.deck.length) {
-        state.currentIndex = 0;
-      }
-      state.isFlipped = false;
-      dom.flashcardElement.classList.remove("is-flipped");
+            if (currentMode === 'de-ca') {
+                // Front: Alemany (Article + Paraula + PluralBezeichnung)
+                if (item.type === 'noun') {
+                    let suffix = item.pluralSuffix && item.pluralSuffix !== '-' ? `, ${item.pluralSuffix}` : (item.pluralSuffix === '-' ? ', -' : '');
+                    frontHTML = `${typeBadge}<div class="word-main">${getArticleHTML(item.article)} ${item.word}${suffix}</div>`;
+                } else {
+                    frontHTML = `${typeBadge}<div class="word-main">${item.word}</div>`;
+                }
 
-      updateHeaderAndStats();
-      renderCurrentCard();
-      syncFilterChipsUI();
-    }
+                // Back: Català, Plural complet i Exemples
+                backHTML = `<div class="word-main">${item.ca}</div>`;
+                if (item.type === 'noun' && item.pluralFull) {
+                    backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
+                }
+                if (item.exDe) {
+                    backHTML += `<div class="example-box">
+                                    <div class="example-de">${item.exDe}</div>
+                                    <div class="example-ca">${item.exCa}</div>
+                                 </div>`;
+                }
+            } 
+            else if (currentMode === 'ca-de') {
+                // Front: Català
+                frontHTML = `${typeBadge}<div class="word-main">${item.ca}</div>`;
+                
+                // Back: Alemany i Exemples
+                backHTML = `<div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>`;
+                if (item.type === 'noun' && item.pluralFull) {
+                    backHTML += `<div class="plural-text">Plural: ${item.pluralFull}</div>`;
+                }
+                if (item.exDe) {
+                    backHTML += `<div class="example-box">
+                                    <div class="example-de">${item.exDe}</div>
+                                    <div class="example-ca">${item.exCa}</div>
+                                 </div>`;
+                }
+            }
+            else if (currentMode === 'art-pl') {
+                // Front: Alemany (sense article ni plural) + significat en català petit
+                frontHTML = `${typeBadge}
+                             <div class="word-main">${getArticleHTML(item.article, true)} ${item.word}</div>
+                             <div class="plural-text">Plural: ???</div>
+                             <div class="word-secondary">${item.ca}</div>`;
+                
+                // Back: Revelar la solució completa
+                backHTML = `<div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>
+                            <div class="plural-text">Plural: ${item.pluralFull}</div>`;
+            }
 
-    /**
-     * Actualitza comptadors, barra de progrés i insígnia de vocab.js
-     */
-    function updateHeaderAndStats() {
-      const totalWords = MASTER_VOCAB.length;
-      const learnedTotal = MASTER_VOCAB.filter(i => state.learnedIds[i.id]).length;
-      const reviewTotal = MASTER_VOCAB.filter(i => state.reviewIds[i.id] && !state.learnedIds[i.id]).length;
-
-      dom.deckSourceBadge.textContent = hasExternalVocab
-        ? `vocab.js (${totalWords})`
-        : `Base A1 (${totalWords})`;
-
-      dom.settingsVocabStatusBadge.textContent = hasExternalVocab
-        ? `Carregat (${totalWords} paraules)`
-        : `Base interna (${totalWords} paraules)`;
-
-      const nounsCount = MASTER_VOCAB.filter(i => i.type === "noun").length;
-      dom.headerSubStats.textContent = `${totalWords} paraules · ${nounsCount} substantius amb Plural`;
-
-      dom.statLearnedCount.textContent = learnedTotal;
-      dom.statReviewCount.textContent = reviewTotal;
-
-      const learnedPct = totalWords > 0 ? Math.round((learnedTotal / totalWords) * 100) : 0;
-      const reviewPct = totalWords > 0 ? Math.round((reviewTotal / totalWords) * 100) : 0;
-      dom.progressBarLearned.style.width = `${learnedPct}%`;
-      dom.progressBarReview.style.width = `${reviewPct}%`;
-
-      // Resum del filtre actiu
-      const summaryParts = [];
-      if (state.mode === "noun-quiz") summaryParts.push("Només Substantius");
-      if (state.filterKapitel !== "all") summaryParts.push(state.filterKapitel.toUpperCase());
-      if (state.filterCategory !== "all") {
-        const catMap = { noun: "Substantius", verb: "Verbs", other: "Adjectius/Altres" };
-        summaryParts.push(catMap[state.filterCategory]);
-      }
-      if (state.filterStatus !== "all") {
-        summaryParts.push(state.filterStatus === "learned" ? "Apreses" : "Pendents");
-      }
-      dom.activeFilterSummary.textContent = summaryParts.length > 0 ? summaryParts.join(" · ") : "Tots els temes";
-
-      const hasCustomFilters = state.filterKapitel !== "all" || state.filterCategory !== "all" || state.filterStatus !== "all";
-      dom.activeFilterDot.classList.toggle("hidden", !hasCustomFilters);
-    }
-
-    /**
-     * Renderitza la targeta actual (Cara Frontal i Cara Posterior amb Pluralbezeichnung)
-     */
-    function renderCurrentCard() {
-      if (state.deck.length === 0) {
-        dom.emptyDeckState.classList.remove("hidden");
-        dom.emptyDeckState.classList.add("flex");
-        dom.cardViewport.classList.add("hidden");
-        dom.currentCardCounter.textContent = "0 / 0";
-        return;
-      }
-
-      dom.emptyDeckState.classList.add("hidden");
-      dom.emptyDeckState.classList.remove("flex");
-      dom.cardViewport.classList.remove("hidden");
-
-      const item = state.deck[state.currentIndex];
-      dom.currentCardCounter.textContent = `${state.currentIndex + 1} / ${state.deck.length}`;
-
-      // Etiquetes de Kapitel i Categoria
-      const typeLabels = {
-        noun: "Substantiu (Nomen)",
-        verb: "Verb",
-        other: "Adjectiu / Expressió"
-      };
-      dom.frontKapitelBadge.textContent = item.kapitel === "Top" ? "Top Freqüència" : `Netzwerk ${item.kapitel}`;
-      dom.backKapitelBadge.textContent = item.kapitel === "Top" ? "Top Freqüència" : `Netzwerk ${item.kapitel}`;
-      dom.frontCategoryBadge.textContent = typeLabels[item.type] || "Vocabulari";
-
-      // Insígnia si ja està apresa o en repàs
-      if (state.learnedIds[item.id]) {
-        dom.frontStatusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400";
-        dom.frontStatusBadge.textContent = "✓ Apresa";
-      } else if (state.reviewIds[item.id]) {
-        dom.frontStatusBadge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400";
-        dom.frontStatusBadge.textContent = "↻ En repàs";
-      } else {
-        dom.frontStatusBadge.className = "hidden";
-      }
-
-      // Reset dels botons del quiz d'article
-      document.querySelectorAll(".article-guess-btn").forEach(btn => {
-        btn.classList.remove("ring-2", "ring-offset-2", "ring-emerald-500", "ring-rose-500", "opacity-40");
-      });
-
-      // Configuració de la CARA FRONTAL segons el Mode d'Estudi
-      if (state.mode === "de-ca") {
-        // MODE PRINCIPAL PER DEFECTE: Alemany davant (amb Article + Pluralbezeichnung) -> Català darrere
-        dom.frontDirectionHint.textContent = "Què significa en català?";
-        if (item.type === "noun" && item.article) {
-          const artStyle = getArticleStyle(item.article);
-          dom.frontMainWord.className = "w-full flex flex-col items-center justify-center";
-          dom.frontMainWord.innerHTML = `
-            <div class="inline-flex items-baseline justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-3 rounded-2xl border ${artStyle.badgeClass}">
-              <span class="text-2xl sm:text-3xl font-black tracking-tight">${item.article}</span>
-              <span class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">${item.word}<span class="text-indigo-600 dark:text-indigo-400 font-mono">, ${item.pluralSuffix}</span></span>
-            </div>
-          `;
-          dom.frontSubHint.textContent = `${artStyle.label} · Gira per veure la traducció`;
-        } else {
-          dom.frontMainWord.className = "text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white";
-          dom.frontMainWord.textContent = item.word;
-          dom.frontSubHint.textContent = item.forms || "Gira per veure la traducció";
-        }
-        dom.frontArticleQuizPills.classList.add("hidden");
-        dom.frontArticleQuizPills.classList.remove("flex");
-      } else if (state.mode === "ca-de") {
-        // MODE INVERS: Català net davant -> Alemany amb Article + Pluralbezeichnung darrere
-        dom.frontDirectionHint.textContent = "Com es diu en alemany?";
-        dom.frontMainWord.className = "text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white";
-        dom.frontMainWord.textContent = item.ca;
-        dom.frontSubHint.textContent = item.type === "noun"
-          ? "Recorda l'article (der/die/das) i la terminació de plural!"
-          : "Pensa en la paraula alemanya abans de girar";
-        dom.frontArticleQuizPills.classList.add("hidden");
-        dom.frontArticleQuizPills.classList.remove("flex");
-      } else if (state.mode === "noun-quiz") {
-        // MODE QUIZ D'ARTICLE I PLURAL
-        dom.frontDirectionHint.textContent = "Quin article i plural porta?";
-        dom.frontMainWord.className = "text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-white";
-        dom.frontMainWord.textContent = item.word;
-        dom.frontSubHint.textContent = `Significat: «${item.ca}»`;
-        dom.frontArticleQuizPills.classList.remove("hidden");
-        dom.frontArticleQuizPills.classList.add("flex");
-      }
-
-      // Configuració de la CARA POSTERIOR (mostra la traducció neta en català + el plural complet desplegat)
-      if (item.type === "noun" && item.article) {
-        const artStyle = getArticleStyle(item.article);
-        dom.backArticleLegend.className = `text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border ${artStyle.badgeClass}`;
-        dom.backArticleLegend.textContent = artStyle.label;
-
-        dom.backGermanDisplay.innerHTML = `
-          <div class="inline-flex items-baseline justify-center flex-wrap gap-x-1.5 gap-y-1 px-3.5 py-1.5 rounded-2xl border ${artStyle.badgeClass}">
-            <span class="text-lg sm:text-xl font-black tracking-tight">${item.article}</span>
-            <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">${item.word}<span class="text-indigo-600 dark:text-indigo-400 font-mono">, ${item.pluralSuffix}</span></span>
-          </div>
-          <div class="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span class="text-slate-400 font-medium">Plural:</span>
-            <span class="text-rose-500 dark:text-rose-400">${item.pluralFull}</span>
-          </div>
-        `;
-      } else {
-        dom.backArticleLegend.className = "hidden";
-        dom.backGermanDisplay.innerHTML = `
-          <div class="px-3.5 py-1.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25">
-            <span class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white">${item.word}</span>
-          </div>
-          <p class="mt-1 text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400">${item.forms || ""}</p>
-        `;
-      }
-
-      dom.backCatalanMeaning.textContent = item.ca;
-      dom.backExampleDe.textContent = item.exDe;
-      dom.backExampleCa.textContent = item.exCa;
-    }
-
-    /**
-     * Gira la targeta 3D
-     */
-    function toggleFlipCard() {
-      if (state.deck.length === 0) return;
-      state.isFlipped = !state.isFlipped;
-      dom.flashcardElement.classList.toggle("is-flipped", state.isFlipped);
-    }
-
-    /**
-     * Marca la targeta actual com a "Apresa" o "Per repassar" i passa a la següent
-     */
-    function markCurrentCard(statusType) {
-      if (state.deck.length === 0) return;
-      const item = state.deck[state.currentIndex];
-
-      if (statusType === "learned") {
-        state.learnedIds[item.id] = true;
-        delete state.reviewIds[item.id];
-      } else {
-        state.reviewIds[item.id] = true;
-        delete state.learnedIds[item.id];
-      }
-
-      saveState();
-
-      // Si estem filtrant per estat i la carta ja no pertany al filtre, reconstruïm
-      if (state.filterStatus !== "all") {
-        rebuildDeck(true);
-        return;
-      }
-
-      // Avança a la següent targeta amb animació suau
-      state.isFlipped = false;
-      dom.flashcardElement.classList.remove("is-flipped");
-
-      setTimeout(() => {
-        state.currentIndex = (state.currentIndex + 1) % state.deck.length;
-        updateHeaderAndStats();
-        renderCurrentCard();
-        dom.cardViewport.classList.remove("animate-card-in");
-        void dom.cardViewport.offsetWidth;
-        dom.cardViewport.classList.add("animate-card-in");
-      }, 130);
-    }
-
-    /**
-     * Torna a la targeta anterior
-     */
-    function goToPreviousCard() {
-      if (state.deck.length === 0) return;
-      state.isFlipped = false;
-      dom.flashcardElement.classList.remove("is-flipped");
-      state.currentIndex = (state.currentIndex - 1 + state.deck.length) % state.deck.length;
-      renderCurrentCard();
-    }
-
-    /**
-     * Barreja aleatòriament la baralla actual (Fisher-Yates)
-     */
-    function shuffleCurrentDeck() {
-      for (let i = state.deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [state.deck[i], state.deck[j]] = [state.deck[j], state.deck[i]];
-      }
-      state.currentIndex = 0;
-      state.isFlipped = false;
-      dom.flashcardElement.classList.remove("is-flipped");
-      renderCurrentCard();
-    }
-
-    /**
-     * Sincronitza l'aspecte visual dels botons de Mode i Filtres
-     */
-    function syncFilterChipsUI() {
-      // Modes d'estudi
-      document.querySelectorAll(".mode-btn").forEach(btn => {
-        const active = btn.dataset.mode === state.mode;
-        btn.className = active
-          ? "mode-btn py-1.5 px-2 rounded-xl transition-all text-center truncate bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs font-bold"
-          : "mode-btn py-1.5 px-2 rounded-xl transition-all text-center truncate text-slate-600 dark:text-slate-400";
-      });
-
-      const activeChipStyle = "bg-indigo-600 text-white border-indigo-600 font-bold shadow-xs";
-      const inactiveChipStyle = "bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700";
-
-      document.querySelectorAll(".filter-chip-kapitel").forEach(btn => {
-        const active = btn.dataset.kapitel === state.filterKapitel;
-        btn.className = `filter-chip-kapitel py-2 px-3 rounded-xl border text-left truncate transition ${active ? activeChipStyle : inactiveChipStyle}`;
-      });
-
-      document.querySelectorAll(".filter-chip-cat").forEach(btn => {
-        const active = btn.dataset.cat === state.filterCategory;
-        btn.className = `filter-chip-cat py-2 px-3 rounded-xl border text-left transition ${active ? activeChipStyle : inactiveChipStyle}`;
-      });
-
-      document.querySelectorAll(".filter-chip-status").forEach(btn => {
-        const active = btn.dataset.status === state.filterStatus;
-        btn.className = `filter-chip-status py-2 px-2.5 rounded-xl border text-center transition ${active ? activeChipStyle : inactiveChipStyle}`;
-      });
-    }
-
-    /**
-     * Renderitza la llista del diccionari / cercador
-     */
-    function renderDictionaryList(query = "") {
-      const q = query.trim().toLowerCase();
-      const matches = MASTER_VOCAB.filter(item => {
-        if (!q) return true;
-        return (
-          item.word.toLowerCase().includes(q) ||
-          item.ca.toLowerCase().includes(q) ||
-          item.kapitel.toLowerCase().includes(q) ||
-          (item.pluralFull && item.pluralFull.toLowerCase().includes(q))
-        );
-      });
-
-      dom.dictTotalCountLabel.textContent = `${matches.length} paraules trobades · Toca'n una per obrir-la`;
-
-      dom.dictionaryListContainer.innerHTML = matches.map(item => {
-        let titleHtml = `<span class="font-bold text-slate-900 dark:text-white">${item.word}</span>`;
-        if (item.type === "noun" && item.article) {
-          const artStyle = getArticleStyle(item.article);
-          titleHtml = `
-            <span class="font-extrabold ${artStyle.textClass}">${item.article}</span>
-            <span class="font-bold text-slate-900 dark:text-white">${item.word}</span>
-            <span class="font-mono text-xs text-indigo-500">, ${item.pluralSuffix}</span>
-            <span class="text-[11px] text-slate-400">(${item.pluralFull})</span>
-          `;
-        }
-
-        const isLearned = !!state.learnedIds[item.id];
-        return `
-          <div data-word-id="${item.id}" class="dict-row py-2.5 px-2 flex items-center justify-between gap-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl cursor-pointer transition">
-            <div class="min-w-0">
-              <div class="text-xs sm:text-sm truncate">${titleHtml}</div>
-              <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${item.ca}</div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              ${isLearned ? '<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/15 text-emerald-500">✓</span>' : ''}
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">${item.kapitel}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    /**
-     * Gestió de gestos tàctils d'iPhone (Swipe Left / Swipe Right i Tap per girar)
-     */
-    function initTouchAndSwipeGestures() {
-      let startX = 0;
-      let startY = 0;
-      let deltaX = 0;
-      let isDragging = false;
-
-      const cardEl = dom.flashcardElement;
-
-      cardEl.addEventListener("touchstart", (e) => {
-        if (e.touches.length !== 1) return;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        deltaX = 0;
-        isDragging = true;
-      }, { passive: true });
-
-      cardEl.addEventListener("touchmove", (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        const currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-        deltaX = currentX - startX;
-        const deltaY = currentY - startY;
-
-        // Si el moviment és horitzontal, mostrem l'indicador de Swipe
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 18) {
-          const opacity = Math.min(Math.abs(deltaX) / 95, 1);
-          if (deltaX > 0) {
-            dom.stampRightFront.style.opacity = opacity;
-            dom.stampLeftFront.style.opacity = 0;
-          } else {
-            dom.stampLeftFront.style.opacity = opacity;
-            dom.stampRightFront.style.opacity = 0;
-          }
-        }
-      }, { passive: true });
-
-      cardEl.addEventListener("touchend", () => {
-        if (!isDragging) return;
-        isDragging = false;
-        dom.stampRightFront.style.opacity = 0;
-        dom.stampLeftFront.style.opacity = 0;
-
-        if (deltaX > 75) {
-          markCurrentCard("learned");
-        } else if (deltaX < -75) {
-          markCurrentCard("review");
-        }
-        deltaX = 0;
-      });
-
-      // Clic estàndard per girar la carta (es cancel·la si s'ha tocat un botó d'àudio o d'article)
-      cardEl.addEventListener("click", () => {
-        toggleFlipCard();
-      });
-    }
-
-    /**
-     * Inicialització de tots els esdeveniments de la interfície
-     */
-    function initEvents() {
-      // Canvi de Mode d'Estudi (CA->DE, DE->CA, Test Article/Plural)
-      document.querySelectorAll(".mode-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.mode = btn.dataset.mode;
-          saveState();
-          rebuildDeck(false);
-        });
-      });
-
-      // Mini-botons d'article en el mode "Test Article/Plural"
-      document.querySelectorAll(".article-guess-btn").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const item = state.deck[state.currentIndex];
-          if (!item) return;
-          const guessed = btn.dataset.guess;
-          const isCorrect = guessed === item.article;
-
-          if (isCorrect) {
-            btn.classList.add("ring-2", "ring-emerald-500");
-            speakGerman(getCardSpokenWord(item));
+            // Girem la targeta a la posició inicial (cara frontal)
+            card.classList.remove('is-flipped');
+            isFlipped = false;
+            
+            // Retardem el canvi de text per no veure com canvia de cop mentre es gira
             setTimeout(() => {
-              state.isFlipped = true;
-              dom.flashcardElement.classList.add("is-flipped");
-            }, 220);
-          } else {
-            btn.classList.add("ring-2", "ring-rose-500", "opacity-40");
-          }
-        });
-      });
-
-      // Botons d'àudio (amb stopPropagation perquè no girin la carta)
-      dom.btnSpeakFront.addEventListener("click", (e) => {
-        const item = state.deck[state.currentIndex];
-        if (item) speakGerman(getCardSpokenWord(item), e);
-      });
-
-      dom.btnSpeakBackWord.addEventListener("click", (e) => {
-        const item = state.deck[state.currentIndex];
-        if (item) speakGerman(getCardSpokenWord(item), e);
-      });
-
-      dom.btnSpeakExample.addEventListener("click", (e) => {
-        const item = state.deck[state.currentIndex];
-        if (item) speakGerman(item.exDe, e);
-      });
-
-      // Controls inferiors
-      document.getElementById("btnPrevCard").addEventListener("click", goToPreviousCard);
-      document.getElementById("btnMarkReview").addEventListener("click", () => markCurrentCard("review"));
-      document.getElementById("btnMarkLearned").addEventListener("click", () => markCurrentCard("learned"));
-
-      // Obertura i tancament de Modals
-      document.getElementById("btnOpenFilters").addEventListener("click", () => {
-        dom.modalFilters.classList.remove("hidden");
-      });
-      document.getElementById("btnCloseFilters").addEventListener("click", () => {
-        dom.modalFilters.classList.add("hidden");
-      });
-
-      document.getElementById("btnOpenDictionary").addEventListener("click", () => {
-        renderDictionaryList(dom.dictSearchInput.value);
-        dom.modalDictionary.classList.remove("hidden");
-      });
-      document.getElementById("btnCloseDictionary").addEventListener("click", () => {
-        dom.modalDictionary.classList.add("hidden");
-      });
-
-      document.getElementById("btnOpenSettings").addEventListener("click", () => {
-        dom.resetConfirmationBox.classList.add("hidden");
-        dom.modalSettings.classList.remove("hidden");
-      });
-      document.getElementById("btnCloseSettings").addEventListener("click", () => {
-        dom.modalSettings.classList.add("hidden");
-      });
-
-      // Cerca dins del diccionari i selecció de paraula
-      dom.dictSearchInput.addEventListener("input", (e) => {
-        renderDictionaryList(e.target.value);
-      });
-
-      dom.dictionaryListContainer.addEventListener("click", (e) => {
-        const row = e.target.closest(".dict-row");
-        if (!row) return;
-        const wordId = row.dataset.wordId;
-
-        // Restablim filtres si la paraula no és al filtre actual
-        let targetIdx = state.deck.findIndex(i => i.id === wordId);
-        if (targetIdx === -1) {
-          state.filterKapitel = "all";
-          state.filterCategory = "all";
-          state.filterStatus = "all";
-          if (state.mode === "noun-quiz") {
-            const wordObj = MASTER_VOCAB.find(i => i.id === wordId);
-            if (wordObj && wordObj.type !== "noun") state.mode = "ca-de";
-          }
-          rebuildDeck(false);
-          targetIdx = state.deck.findIndex(i => i.id === wordId);
+                cardFront.innerHTML = frontHTML;
+                cardBack.innerHTML = backHTML;
+            }, 180); 
         }
 
-        if (targetIdx !== -1) {
-          state.currentIndex = targetIdx;
-          state.isFlipped = false;
-          dom.flashcardElement.classList.remove("is-flipped");
-          renderCurrentCard();
+        // --- GESTIÓ D'ESDEVENIMENTS ---
+        
+        card.addEventListener('click', () => {
+            isFlipped = !isFlipped;
+            card.classList.toggle('is-flipped', isFlipped);
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentIndex > 0) currentIndex--;
+            else currentIndex = vocab.length - 1;
+            updateCard();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentIndex < vocab.length - 1) currentIndex++;
+            else currentIndex = 0;
+            updateCard();
+        });
+
+        document.getElementById('shuffleBtn').addEventListener('click', () => {
+            for (let i = vocab.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vocab[i], vocab[j]] = [vocab[j], vocab[i]];
+            }
+            currentIndex = 0;
+            updateCard();
+        });
+
+        modeSelect.addEventListener('change', () => {
+            applyModeFilter();
+        });
+
+        // --- SUPORT SWIPE PER A IPHONE ---
+        let touchstartX = 0;
+        let touchendX = 0;
+        const SWIPE_THRESHOLD = 50; // Píxels mínims per considerar-ho un lliscament
+
+        document.getElementById('cardContainer').addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        document.getElementById('cardContainer').addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            if (touchendX < touchstartX - SWIPE_THRESHOLD) {
+                // Lliscar cap a l'esquerra -> Següent
+                document.getElementById('nextBtn').click();
+            }
+            if (touchendX > touchstartX + SWIPE_THRESHOLD) {
+                // Lliscar cap a la dreta -> Anterior
+                document.getElementById('prevBtn').click();
+            }
         }
-        dom.modalDictionary.classList.add("hidden");
-      });
 
-      // Selecció de xips de Filtres
-      document.querySelectorAll(".filter-chip-kapitel").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.filterKapitel = btn.dataset.kapitel;
-          saveState();
-          rebuildDeck(false);
-        });
-      });
-
-      document.querySelectorAll(".filter-chip-cat").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.filterCategory = btn.dataset.cat;
-          saveState();
-          rebuildDeck(false);
-        });
-      });
-
-      document.querySelectorAll(".filter-chip-status").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.filterStatus = btn.dataset.status;
-          saveState();
-          rebuildDeck(false);
-        });
-      });
-
-      document.getElementById("btnShuffleDeck").addEventListener("click", () => {
-        shuffleCurrentDeck();
-        dom.modalFilters.classList.add("hidden");
-      });
-
-      const resetFiltersAction = () => {
-        state.filterKapitel = "all";
-        state.filterCategory = "all";
-        state.filterStatus = "all";
-        saveState();
-        rebuildDeck(false);
-        dom.modalFilters.classList.add("hidden");
-      };
-      document.getElementById("btnClearAllFilters").addEventListener("click", resetFiltersAction);
-      document.getElementById("btnResetFiltersFromEmpty").addEventListener("click", resetFiltersAction);
-
-      // Tema Fosc / Clar
-      document.getElementById("btnToggleTheme").addEventListener("click", () => {
-        state.theme = state.theme === "dark" ? "light" : "dark";
-        applyTheme();
-        saveState();
-      });
-
-      // Reinici de progrés amb confirmació integrada
-      document.getElementById("btnRequestResetProgress").addEventListener("click", () => {
-        dom.resetConfirmationBox.classList.remove("hidden");
-      });
-      document.getElementById("btnCancelReset").addEventListener("click", () => {
-        dom.resetConfirmationBox.classList.add("hidden");
-      });
-      document.getElementById("btnConfirmReset").addEventListener("click", () => {
-        state.learnedIds = {};
-        state.reviewIds = {};
-        saveState();
-        dom.resetConfirmationBox.classList.add("hidden");
-        rebuildDeck(false);
-      });
-    }
-
-    // Arrencada inicial
-    window.addEventListener("DOMContentLoaded", () => {
-      loadSavedState();
-      applyTheme();
-      initEvents();
-      initTouchAndSwipeGestures();
-      rebuildDeck(false);
-    });
-  </script>
+        // Iniciar
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
 </body>
 </html>
