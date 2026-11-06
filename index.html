@@ -5,21 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Afegeix el theme-color negre per forçar la barra de Safari al mateix color fosc -->
     <meta name="theme-color" content="#000000">
     <title>Alemany A1 - Vocabulari (OLED)</title>
     <style>
         :root {
             /* MODO OLED OSCUR */
-            --bg-gradient: #000000; /* Fons completament negre */
-            --card-bg: #121212; /* Gris molt fosc per donar profunditat a la targeta sobre fons negre */
+            --bg-gradient: #000000;
+            --card-bg: #121212;
             --text-main: #f8fafc;
             --text-muted: #a1a1aa;
             --primary: #3b82f6;
             --primary-hover: #60a5fa;
-            --der-color: #38bdf8; /* Blau clar */
-            --die-color: #fb7185; /* Rosa clar */
-            --das-color: #34d399; /* Verd clar */
+            --der-color: #38bdf8;
+            --die-color: #fb7185;
+            --das-color: #34d399;
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
@@ -43,14 +42,13 @@
             padding-bottom: var(--safe-bottom);
         }
 
-        /* --- HEADER & CONTROLS --- */
         header {
             padding: 16px 20px;
             text-align: center;
-            background: rgba(0, 0, 0, 0.85); /* Negre amb opacitat */
+            background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.08); /* Vora suau */
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             z-index: 10;
         }
         h1 {
@@ -72,7 +70,7 @@
             border: 1px solid rgba(255,255,255,0.15);
             font-size: 0.95rem;
             font-weight: 500;
-            background: #1c1c1e; /* Estil botons natius de iOS en Dark Mode */
+            background: #1c1c1e;
             color: var(--text-main);
             outline: none;
             cursor: pointer;
@@ -114,7 +112,6 @@
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* --- 3D CARD SCENE --- */
         .card-container {
             flex: 1;
             perspective: 1500px;
@@ -157,10 +154,9 @@
         }
         .card-back {
             transform: rotateY(180deg);
-            background: #0a0a0a; /* Lleugerament diferent per distingir la part posterior */
+            background: #0a0a0a;
         }
 
-        /* --- TIPOGRAFIA INTERNA --- */
         .type-badge {
             position: absolute;
             top: 24px;
@@ -175,7 +171,6 @@
             color: var(--text-muted);
         }
         
-        /* --- BOTÓ D'ÀUDIO (Més gran) --- */
         .speak-btn {
             position: absolute;
             top: 18px;
@@ -183,8 +178,8 @@
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.2);
             color: var(--text-main);
-            width: 54px;   /* Molt més gran per als dits */
-            height: 54px;  /* Molt més gran per als dits */
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -249,7 +244,6 @@
         .art-das { color: var(--das-color); }
         .hidden-art { color: #52525b; } 
         
-        /* --- NAVEGACIÓ INFERIOR --- */
         .footer-controls {
             display: flex;
             justify-content: space-between;
@@ -339,9 +333,8 @@
         const statsDisplay = document.getElementById('statsDisplay');
         const progressFill = document.getElementById('progressFill');
 
-        // Reproductor TTS nativo
         window.playSpeech = function(text, event) {
-            event.stopPropagation(); // Evita que es giri la targeta al tocar l'altaveu
+            event.stopPropagation();
             if (!('speechSynthesis' in window)) {
                 alert("El teu navegador no suporta la reproducció d'àudio.");
                 return;
@@ -358,7 +351,6 @@
             if (item.type === 'noun' && item.article && !hideArticle) {
                 speakText = item.article + ' ' + item.word;
             }
-            // SVG augmentat a 28x28
             const icon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
             return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "\'")}', event)">${icon}</button>`;
         }
@@ -427,12 +419,13 @@
                 if (item.exDe) backHTML += `<div class="example-box"><div class="example-de">${item.exDe}</div><div class="example-ca">${item.exCa}</div></div>`;
             }
             else if (currentMode === 'art-pl') {
-                let speakerFrontHidden = getSpeakerButton(item, true); 
-                frontHTML = `${speakerFrontHidden}${typeBadge}
+                // Sense botó d'àudio a la cara frontal perquè no doni pistes
+                frontHTML = `${typeBadge}
                              <div class="word-main">${getArticleHTML(item.article, true)} ${item.word}</div>
                              <div class="plural-text">Plural: ???</div>
                              <div class="word-secondary">${item.ca}</div>`;
                 
+                // Botó d'àudio només a la part posterior, on es mostra la solució
                 backHTML = `${speakerBack}
                             <div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>
                             <div class="plural-text">Plural: ${item.pluralFull}</div>`;
@@ -447,7 +440,6 @@
             }, 180); 
         }
 
-        // Events i control de gestos
         card.addEventListener('click', () => {
             isFlipped = !isFlipped;
             card.classList.toggle('is-flipped', isFlipped);
