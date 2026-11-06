@@ -43,7 +43,7 @@
         }
 
         header {
-            padding: 16px 20px;
+            padding: 16px 20px 10px;
             text-align: center;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(12px);
@@ -58,42 +58,35 @@
             margin-bottom: 14px;
             letter-spacing: -0.3px;
         }
-        .controls {
+        
+        /* Botons de mode (Segmented Control style) */
+        .mode-controls {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             flex-wrap: wrap;
+            margin-bottom: 5px;
         }
-        select, button {
-            padding: 12px 18px;
-            border-radius: 14px;
+        .mode-btn {
+            padding: 10px 14px;
+            border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.15);
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 0.85rem;
+            font-weight: 600;
             background: #1c1c1e;
-            color: var(--text-main);
+            color: var(--text-muted);
             outline: none;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
             transition: all 0.2s ease;
         }
-        select {
-            appearance: none;
-            padding-right: 36px;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23f8fafc%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px top 50%;
-            background-size: 10px auto;
-        }
-        select:active { background-color: #2c2c2e; }
-        button {
+        .mode-btn.active {
             background: var(--primary);
-            color: white;
-            font-weight: 600;
-            border: none;
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
-        button:active {
-            background: var(--primary-hover);
+        .mode-btn:active {
             transform: scale(0.96);
         }
         
@@ -101,7 +94,7 @@
             width: 100%;
             height: 5px;
             background: rgba(255,255,255,0.12);
-            margin-top: 18px;
+            margin-top: 14px;
             border-radius: 3px;
             overflow: hidden;
         }
@@ -263,6 +256,8 @@
             box-shadow: 0 4px 14px rgba(0,0,0,0.4);
             transition: all 0.2s ease;
             border: 1px solid rgba(255,255,255,0.1);
+            outline: none;
+            cursor: pointer;
         }
         .nav-btn:active {
             background: #2c2c2e;
@@ -287,13 +282,10 @@
 
     <header>
         <h1>Alemany A1 - Netzwerk neu</h1>
-        <div class="controls">
-            <select id="modeSelect">
-                <option value="de-ca">DE ➔ CA (Reconeixement)</option>
-                <option value="ca-de">CA ➔ DE (Producció)</option>
-                <option value="art-pl">Art. + Plural (Només Noms)</option>
-            </select>
-            <button id="shuffleBtn">🔀 Remenar</button>
+        <div class="mode-controls" id="modeButtons">
+            <button class="mode-btn active" data-mode="de-ca">DE ➔ CA</button>
+            <button class="mode-btn" data-mode="ca-de">CA ➔ DE</button>
+            <button class="mode-btn" data-mode="art-pl">Art. + Plural</button>
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progressFill"></div>
@@ -309,7 +301,7 @@
 
     <div class="footer-controls">
         <button class="nav-btn" id="prevBtn">←</button>
-        <div class="stats-counter" id="statsDisplay">0 / 0</div>
+        <div class="stats-counter" id="statsDisplay">0</div>
         <button class="nav-btn" id="nextBtn">→</button>
     </div>
 
@@ -329,9 +321,9 @@
         const card = document.getElementById('flashcard');
         const cardFront = document.getElementById('cardFront');
         const cardBack = document.getElementById('cardBack');
-        const modeSelect = document.getElementById('modeSelect');
         const statsDisplay = document.getElementById('statsDisplay');
         const progressFill = document.getElementById('progressFill');
+        const modeButtons = document.querySelectorAll('.mode-btn');
 
         window.playSpeech = function(text, event) {
             event.stopPropagation();
@@ -340,9 +332,10 @@
                 return;
             }
             window.speechSynthesis.cancel();
+            // Afegim la coma i l'espai al principi per forçar la micropausa d'iOS
             const utterance = new SpeechSynthesisUtterance(", " + text);
             utterance.lang = 'de-DE';
-            utterance.rate = 0.70; 
+            utterance.rate = 0.85; 
             window.speechSynthesis.speak(utterance);
         };
 
@@ -352,10 +345,9 @@
                 speakText = item.article + ' ' + item.word;
             }
             const icon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
-            return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "'")}', event)">${icon}</button>`;
+            return `<button class="speak-btn" onclick="playSpeech('${speakText.replace(/'/g, "\'")}', event)">${icon}</button>`;
         }
 
-        // Funció per remenar l'array actual
         function shuffleCurrentVocab() {
             for (let i = vocab.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -374,12 +366,20 @@
                 return item;
             });
             
-            // Aplica el mode i el remena automàticament a l'entrar
             applyModeFilter();
+            
+            // Gestió dels botons de mode
+            modeButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    modeButtons.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentMode = e.target.getAttribute('data-mode');
+                    applyModeFilter();
+                });
+            });
         }
 
         function applyModeFilter() {
-            currentMode = modeSelect.value;
             let currentList = (typeof window.VOCAB_DATA !== 'undefined') ? [...window.VOCAB_DATA] : [...FALLBACK_VOCAB];
             
             if (currentMode === 'art-pl') {
@@ -388,7 +388,6 @@
                 vocab = currentList;
             }
             
-            // REMENAR AUTOMÀTICAMENT QUAN CARREGA O ES CANVIA DE MODE
             shuffleCurrentVocab();
             
             currentIndex = 0;
@@ -406,7 +405,7 @@
             if (vocab.length === 0) return;
 
             const item = vocab[currentIndex];
-            statsDisplay.innerText = `${currentIndex + 1} / ${vocab.length}`;
+            statsDisplay.innerText = `${currentIndex + 1}`;
             progressFill.style.width = `${((currentIndex + 1) / vocab.length) * 100}%`;
             
             let frontHTML = '';
@@ -437,13 +436,11 @@
                 if (item.exDe) backHTML += `<div class="example-box"><div class="example-de">${item.exDe}</div><div class="example-ca">${item.exCa}</div></div>`;
             }
             else if (currentMode === 'art-pl') {
-                // Sense botó d'àudio a la cara frontal perquè no doni pistes
                 frontHTML = `${typeBadge}
                              <div class="word-main">${getArticleHTML(item.article, true)} ${item.word}</div>
                              <div class="plural-text">Plural: ???</div>
                              <div class="word-secondary">${item.ca}</div>`;
                 
-                // Botó d'àudio només a la part posterior, on es mostra la solució
                 backHTML = `${speakerBack}
                             <div class="word-main">${getArticleHTML(item.article)} ${item.word}</div>
                             <div class="plural-text">Plural: ${item.pluralFull}</div>`;
@@ -472,12 +469,6 @@
             else currentIndex = 0;
             updateCard();
         });
-        document.getElementById('shuffleBtn').addEventListener('click', () => {
-            shuffleCurrentVocab();
-            currentIndex = 0;
-            updateCard();
-        });
-        modeSelect.addEventListener('change', applyModeFilter);
 
         let touchstartX = 0;
         let touchendX = 0;
