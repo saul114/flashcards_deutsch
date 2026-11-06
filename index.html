@@ -340,9 +340,9 @@
                 return;
             }
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
+            const utterance = new SpeechSynthesisUtterance(", " + text);
             utterance.lang = 'de-DE';
-            utterance.rate = 0.85; 
+            utterance.rate = 0.70; 
             window.speechSynthesis.speak(utterance);
         };
 
